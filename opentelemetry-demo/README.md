@@ -5,11 +5,11 @@ https://opentelemetry.io/docs/demo/kubernetes-deployment/
 ```
 ❯ helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
 
-❯ helm install workshop-otel-demo open-telemetry/opentelemetry-demo
+❯ helm install workshop-otel-demo open-telemetry/opentelemetry-demo -f values.yaml -n otel-demo --create-namespace
 
 NAME: workshop-otel-demo
 LAST DEPLOYED: Fri Nov  1 11:47:45 2024
-NAMESPACE: default
+NAMESPACE: otel-demo
 STATUS: deployed
 REVISION: 1
 NOTES:
@@ -38,7 +38,7 @@ NOTES:
 ## Access Demo
 
 ```
-❯ kubectl port-forward svc/workshop-otel-demo-frontendproxy 8080:8080
+❯ kubectl port-forward svc/workshop-otel-demo-frontendproxy 8080:8080 -n otel-demo
 
 Forwarding from 127.0.0.1:8080 -> 8080
 Forwarding from [::1]:8080 -> 8080
