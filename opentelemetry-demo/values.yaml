@@ -1,0 +1,11 @@
+opentelemetry-collector:
+  enabled: false
+
+grafana:
+  enabled: false
+
+jaeger:
+  enabled: false
+
+prometheus:
+  enabled: false
