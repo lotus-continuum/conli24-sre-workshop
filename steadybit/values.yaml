@@ -1,0 +1,10 @@
+global:
+  clusterName: "app-cluster"
+extension-container:
+  container:
+    runtime: containerd
+agent:
+  registerUrl: https://platform.steadybit.com
+  persistence:
+    filesystem:
+      storageClass: gp2

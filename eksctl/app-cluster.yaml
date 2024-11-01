@@ -21,6 +21,7 @@ managedNodeGroups:
       nodegroup-role: worker
     iam:
       withAddonPolicies:
+        ebs: true
         externalDNS: true
         certManager: true
 
@@ -28,6 +29,7 @@ addons:
   - name: vpc-cni
   - name: coredns
   - name: kube-proxy
+  - name: aws-ebs-csi-driver
 
 iam:
   withOIDC: true

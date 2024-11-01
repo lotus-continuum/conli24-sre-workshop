@@ -1,0 +1,9 @@
+```
+helm repo add steadybit https://steadybit.github.io/helm-charts
+helm repo update
+helm install steadybit-agent --namespace steadybit-agent \
+  --create-namespace \
+  --set agent.key=${STEADYBIT_AGENT_KEY} \
+  -f values.yaml \
+  steadybit/steadybit-agent
+```
