@@ -10,11 +10,11 @@ kubernetesNetworkConfig:
   ipFamily: IPv4 # or IPv6
 
 managedNodeGroups:
-  - name: managed-ng-1
-    instanceType: m5.large
+  - name: worker-nodes
+    instanceType: t4g.large
     minSize: 1
-    maxSize: 1
-    desiredCapacity: 1
+    maxSize: 3
+    desiredCapacity: 2
     volumeSize: 20
     labels: {role: worker}
     tags:
