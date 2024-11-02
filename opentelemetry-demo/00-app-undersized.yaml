@@ -1,0 +1,85 @@
+# App
+
+components:
+  accountingService:
+    resources:
+      limits:
+        memory: 100Mi # 120Mi
+  adService:
+    resources:
+      limits:
+        memory: 200Mi # 300Mi
+  cartService:
+    resources:
+      limits:
+        memory: 120Mi # 160Mi
+  checkoutService:
+    resources:
+      limits:
+        memory: 20Mi
+  currencyService:
+    resources:
+      limits:
+        memory: 20Mi
+  emailService:
+    resources:
+      limits:
+        memory: 80Mi # 100Mi
+  frauddetectionService:
+    resources:
+      limits:
+        memory: 200Mi # 300Mi 
+  frontend:
+    resources:
+      limits:
+        memory: 200Mi # 250Mi
+  frontendProxy:
+    resources:
+      limits:
+        memory: 40Mi # 50Mi
+  imageprovider:
+    resources:
+      limits:
+        memory: 40Mi # 50Mi
+  paymentService:
+    resources:
+      limits:
+        memory: 90Mi # 120Mi
+  productCatalogService:
+    resources:
+      limits:
+        memory: 20Mi
+  quoteService:
+    resources:
+      limits:
+        memory: 30Mi # 40Mi
+  recommendationService:
+    resources:
+      limits:
+        memory: 100Mi # 500Mi (high to enable caching FF)
+  shippingService:
+    resources:
+      limits:
+        memory: 20Mi
+  kafka:
+    resources:
+      limits:
+        memory: 500Mi # 600Mi (Xms/Xmx at 400M)
+
+# Tools
+
+components:
+  loadgenerator:
+    enabled: false
+
+opentelemetry-collector:
+  enabled: false
+
+grafana:
+  enabled: false
+
+jaeger:
+  enabled: false
+
+prometheus:
+  enabled: false
