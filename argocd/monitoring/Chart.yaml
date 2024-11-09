@@ -1,0 +1,5 @@
+apiVersion: v2
+name: demo
+description: App-of-apps for all OpenTelemetry Demo applications
+type: application
+version: 1.0.0

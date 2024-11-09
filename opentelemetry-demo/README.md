@@ -1,4 +1,8 @@
-# Install OpenTelemetry Demo
+IMPORTANT:
+
+We are using ArgoCD now to install the opentelemetry demo. Please refer to the ArgoCD section in the argocd/README.md file.
+
+# Alternative #2 - Install OpenTelemetry Demo via Helm
 
 https://opentelemetry.io/docs/demo/kubernetes-deployment/
 

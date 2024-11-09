@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: dash0-demo
+  name: dash0-monitoring
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -12,7 +12,7 @@ spec:
     namespace: argocd
   project: default
   source:
-    path: argocd/demo/
+    path: argocd/monitoring/
     repoURL: https://github.com/lotus-continuum/conli24-sre-workshop.git
     targetRevision: main
     helm:
@@ -22,7 +22,6 @@ spec:
       values: |
         clusterName: demo-eu-west-1-app-cluster
         region: eu-west-1
-        dash0Token: auth_nkCOzkm8oBqfi90e87o7JAbyOjSZ51Sp
   syncPolicy:
     automated:
       prune: true
