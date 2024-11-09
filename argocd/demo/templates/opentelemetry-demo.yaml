@@ -29,7 +29,7 @@ spec:
     helm:
       values: | {{ toYaml .Values.otelDemo.helm | nindent 8 }}
 ---
-# Monitor this namespace with Dash0
+# Monitor otel-demo namespace with Dash0
 apiVersion: operator.dash0.com/v1alpha1
 kind: Dash0Monitoring
 metadata:
