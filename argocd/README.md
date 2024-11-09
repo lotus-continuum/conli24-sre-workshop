@@ -21,3 +21,23 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 kubectl apply -f argocd-demo.yaml
 kubectl apply -f argocd-monitoring.yaml
 ```
+
+## Prometheus Alerts (automatically done via ArgoCD)
+
+```
+❯ kubectl apply --server-side -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.78.0/example/prometheus-operator-crd/monitoring.coreos.com_prometheusrules.yaml
+
+customresourcedefinition.apiextensions.k8s.io/prometheusrules.monitoring.coreos.com serverside-applied
+``
+
+Source: https://github.com/dash0hq/dash0-operator/blob/main/helm-chart/dash0-operator/README.md#managing-dash0-dashboards
+
+## Perses Dashboards (automatically done via ArgoCD)
+
+Install the Perses dashboard custom resource definition with the following command:
+
+```
+kubectl apply --server-side -f https://raw.githubusercontent.com/perses/perses-operator/main/config/crd/bases/perses.dev_persesdashboards.yaml
+```
+
+Source: https://github.com/dash0hq/dash0-operator/blob/main/helm-chart/dash0-operator/README.md#managing-dash0-dashboards

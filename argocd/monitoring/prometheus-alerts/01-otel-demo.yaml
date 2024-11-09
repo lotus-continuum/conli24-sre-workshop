@@ -1,0 +1,27 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    prometheus: k8s
+    role: alert-rules
+  name: 01-otel-demo
+  namespace: dash0-system
+spec:
+  groups:
+    - name: sre - otel-demo
+      interval: 1m
+      limit: 10
+      partial_response_strategy: warn
+      rules:
+        - alert: High log rate of erroneous log records
+          expr: 'sum by (service_name,service_namespace,service_instance_id) (rate(logs_total{otel_log_severity_range = "ERROR"}[1m0s]))/sum by (service_name,service_namespace,service_instance_id) (rate(logs_total[1m0s])) *100 > $__threshold'
+          for: 0s
+          keep_firing_for: 0s
+          annotations:
+            description: "High rate of error log records for service {{$labels.service_name}}"
+            summary: "High rate of error log records for service {{$labels.service_name}}"
+            threshold-critical: "5"
+            threshold-degraded: "1"
+          labels:
+            priority: p3
+            team: backend

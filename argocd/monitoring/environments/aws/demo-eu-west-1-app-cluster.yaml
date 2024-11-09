@@ -1,9 +1,13 @@
 opentelemetryCollectorDeployment:
   enabled: true
 dash0Operator:
-  enabled: false
+  enabled: true
   dash0Export:
-    enabled: false
+    enabled: true
     endpoint: ingress.eu-west-1.aws.dash0.com:4317
     name: dash0-authorization-secret
     apiEndpoint: https://api.eu-west-1.aws.dash0.com
+  persesDashboards:
+    enabled: true
+  prometheusAlerts:
+    enabled: true
