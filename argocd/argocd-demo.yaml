@@ -13,7 +13,7 @@ spec:
   project: default
   source:
     path: argocd/demo/
-    repoURL: git@github.com:lotus-continuum/conli24-sre-workshop.git
+    repoURL: https://github.com/lotus-continuum/conli24-sre-workshop.git
     targetRevision: main
     helm:
       # don't fail if there are new environment specific values in the repo
