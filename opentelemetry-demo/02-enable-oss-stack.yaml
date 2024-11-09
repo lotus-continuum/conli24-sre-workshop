@@ -1,6 +1,42 @@
 opentelemetry-collector:
   enabled: true
-
+  resources:
+    limits:
+      # default is 200Mi and services often report that they cannot send
+      # telemetry due to the memory limiter kicking in and refusing data
+      # (message: data refused due to high memory usage)
+      memory: 500Mi
+  config:
+    extensions:
+      bearertokenauth/dash0:
+        scheme: "Bearer"
+        token: "auth_eF01S0iwMVqYYBDmp4MmD7jnCYzQxv5E"
+    exporters:
+      "otlp/dash0":
+        endpoint: 'ingress.eu-west-1.aws.dash0-dev.com:4317'
+        auth:
+          authenticator: bearertokenauth/dash0
+    service:
+      extensions:
+        - health_check
+        - bearertokenauth/dash0
+      telemetry:
+        logs:
+          level: "debug"
+      pipelines:
+        logs:
+          exporters:
+            - otlp/dash0
+        traces:
+          exporters:
+            - otlp
+            - otlp/dash0
+        metrics:
+          receivers:
+            - otlp
+          exporters:
+            - otlp/dash0
+            - otlphttp/prometheus
 grafana:
   enabled: true
 
