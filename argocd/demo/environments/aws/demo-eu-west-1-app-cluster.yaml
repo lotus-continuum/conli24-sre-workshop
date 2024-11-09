@@ -2,7 +2,7 @@ otelDemoPostgres:
   enabled: true
   helm:
     global:
-      defaultStorageClass: "gp2"
+      storageClass: "gp2"
       postgresql:
         auth:
           username: "ffs"
