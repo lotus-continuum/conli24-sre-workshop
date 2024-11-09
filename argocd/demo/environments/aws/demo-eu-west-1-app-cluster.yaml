@@ -1,5 +1,5 @@
 otelDemoPostgres:
-  enabled: true
+  enabled: false
   helm:
     global:
       storageClass: "gp2"
@@ -10,7 +10,7 @@ otelDemoPostgres:
           database: "ffs"
 
 otelDemo:
-  enabled: true
+  enabled: false
   helm:
     prometheus:
       server:
