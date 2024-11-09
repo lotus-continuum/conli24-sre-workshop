@@ -1,0 +1,108 @@
+otelDemoPostgres:
+  enabled: false
+  version: 13.4.4
+  autoSync: true
+  prune: true
+
+otelDemo:
+  enabled: false
+  version: 0.29.0
+  autoSync: true
+  prune: true
+  helm:
+    opentelemetry-collector:
+      mode: daemonset
+      image:
+        repository: "otel/opentelemetry-collector-contrib"
+
+      # Enable the service explicitly, which is required when mode=daemonset,
+      # see https://github.com/open-telemetry/opentelemetry-helm-charts/blob/main/charts/opentelemetry-collector/values.yaml#L428-L431
+      service:
+        enabled: true
+      presets:
+        kubernetesAttributes:
+          enabled: true
+        kubeletMetrics:
+          enabled: true
+      config:
+        receivers:
+          otlp:
+            protocols:
+              http:
+                # Bind to 0.0.0.0 to allow for `kubectl port-forward` to work
+                # This may be susceptible to denial of service attacks - CWE-1327 https://cwe.mitre.org/data/definitions/1327.html
+                endpoint: 0.0.0.0:4318
+                # Since this collector needs to receive data from the web, enable cors for all origins
+                # `allowed_origins` can be refined for your deployment domain
+                cors:
+                  allowed_origins:
+                    - "http://*"
+                    - "https://*"
+
+        exporters:
+          ## Create an exporter to Jaeger using the standard `otlp` export format
+          otlp:
+            endpoint: '{{ include "otel-demo.name" . }}-jaeger-collector:4317'
+            tls:
+              insecure: true
+          # Create an exporter to Prometheus (metrics)
+          prometheus:
+            endpoint: '0.0.0.0:9464'
+            resource_to_telemetry_conversion:
+              enabled: true
+            enable_open_metrics: true
+
+        processors:
+          # we can remove when this is fixed: https://github.com/open-telemetry/opentelemetry-demo/issues/737
+          transform:
+            metric_statements:
+              - context: metric
+                statements:
+                  - set(description, "Measures the duration of inbound HTTP requests") where name == "http.server.duration"
+          # we can remove when this is fixed: https://github.com/open-telemetry/opentelemetry-demo/issues/826
+          filter/ottl:
+            error_mode: ignore
+            metrics:
+              metric:
+                - 'name == "queueSize"'
+          resourcedetection:
+            detectors: ["ec2"]
+
+        connectors:
+          spanmetrics: {}
+
+        service:
+          pipelines:
+            # Maintenance notes: all three exporter declarations are currently overwritten entirely in the
+            # environment specific values file (demo/environments/aws/demo-eu-west-1-demo.yaml).
+            # (The exporter arrays declared here and there are not merged.)
+            traces:
+              processors:
+              - memory_limiter
+              - batch
+              exporters:
+              - otlp
+              - spanmetrics
+            metrics:
+              receivers:
+              - otlp
+              - spanmetrics
+              processors:
+              - memory_limiter
+              - filter/ottl
+              - resourcedetection
+              - transform
+              - batch
+              exporters:
+              - prometheus
+            logs:
+              processors:
+              - memory_limiter
+              - resourcedetection
+              - batch
+
+opentelemetryCollectorDeployment:
+  enabled: false
+  version: 0.90.1
+  autoSync: true
+  prune: true
