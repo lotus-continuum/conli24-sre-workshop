@@ -1,0 +1,381 @@
+apiVersion: perses.dev/v1alpha1
+kind: PersesDashboard
+metadata:
+  name: 02-opentelemetry-demo
+  namespace: dash0-system
+spec:
+  duration: 30m
+  display:
+    description: Showing data from the OpenTelemetry Demo
+    name: OpenTelemetry Demo
+  layouts:
+    - kind: Grid
+      spec:
+        items:
+          - content:
+              $ref: "#/spec/panels/7a73f26e-352d-4740-af6e-422188fc296b"
+            height: 7
+            width: 16
+            x: 0
+            "y": 0
+          - content:
+              $ref: "#/spec/panels/7a73f26e-352d-4740-af6e-422188fc296b-copy"
+            height: 6
+            width: 16
+            x: 0
+            "y": 7
+          - content:
+              $ref: "#/spec/panels/7a73f26e-352d-4740-af6e-422188fc296b-copy-1"
+            height: 8
+            width: 16
+            x: 0
+            "y": 13
+          - content:
+              $ref: "#/spec/panels/bce8f62e-3685-4157-9200-4112ffb3ccbe"
+            height: 7
+            width: 4
+            x: 16
+            "y": 0
+          - content:
+              $ref: "#/spec/panels/7a73f26e-352d-4740-af6e-422188fc296b-copy-2"
+            height: 6
+            width: 8
+            x: 16
+            "y": 7
+          - content:
+              $ref: "#/spec/panels/7a73f26e-352d-4740-af6e-422188fc296b-copy-2-copy"
+            height: 8
+            width: 8
+            x: 16
+            "y": 13
+          - content:
+              $ref: "#/spec/panels/2575f765-bccc-43e6-8c8e-b36216354427"
+            height: 7
+            width: 4
+            x: 20
+            "y": 0
+          - content:
+              $ref: "#/spec/panels/c67f5011-a981-48ee-8cec-1e02684e8d43"
+            height: 8
+            width: 16
+            x: 0
+            "y": 21
+  panels:
+    2575f765-bccc-43e6-8c8e-b36216354427:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: K8s Pod CPU Util
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds: {}
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: line
+              lineWidth: 1
+              palette:
+                mode: auto
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 2
+                enforceMinimumFractionDigits: false
+                shortValues: false
+                signDisplay: auto
+                unit: "%"
+              min: 0
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum by (k8s_pod_name) (k8s_pod_cpu_utilization_ratio{})
+                  seriesNameFormat: "{{k8s_pod_name}}"
+    7a73f26e-352d-4740-af6e-422188fc296b:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Service Request Rate
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds: {}
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: line
+              lineWidth: 1
+              palette:
+                mode: auto
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 2
+                enforceMinimumFractionDigits: false
+                shortValues: false
+                signDisplay: auto
+                unit: counts/sec
+              min: 0
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum by (service_name) (rate(spans_total{$service_name}[$__interval])) OR
+                    on() vector(0)
+                  seriesNameFormat: "{{service_name}}"
+    7a73f26e-352d-4740-af6e-422188fc296b-copy:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Service Request Error Rate
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds: {}
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: bar
+              lineWidth: 1
+              palette:
+                mode: auto
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 2
+                enforceMinimumFractionDigits: false
+                shortValues: false
+                signDisplay: auto
+                unit: "%"
+              min: 0
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum by (service_name)
+                    (rate(spans_total{$service_name,otel_span_status_code="ERROR"}[$__interval]))/sum
+                    by (service_name)
+                    (rate(spans_total{$service_name}[$__interval]))  OR on()
+                    vector(0)
+                  seriesNameFormat: "{{service_name}}"
+    7a73f26e-352d-4740-af6e-422188fc296b-copy-1:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Service 95th percentile
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds: {}
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: line
+              lineWidth: 1
+              palette:
+                mode: auto
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 2
+                enforceMinimumFractionDigits: false
+                shortValues: false
+                signDisplay: auto
+                unit: seconds
+              min: 0
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: histogram_quantile(0.95, sum by (service_name,le)
+                    (rate(spans_duration_seconds_bucket{$service_name}[$__interval])))
+                    OR on() vector(0)
+                  seriesNameFormat: "{{service_name}}"
+    7a73f26e-352d-4740-af6e-422188fc296b-copy-2:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Log Record Rate
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds: {}
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: line
+              lineWidth: 1
+              palette:
+                mode: auto
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 2
+                enforceMinimumFractionDigits: false
+                shortValues: false
+                signDisplay: auto
+                unit: counts/sec
+              min: 0
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum by (service_name) (rate(logs_total{$service_name}[$__interval])) OR
+                    on() vector(0)
+                  seriesNameFormat: "{{service_name}}"
+    7a73f26e-352d-4740-af6e-422188fc296b-copy-2-copy:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Metric Data Points (last 24h)
+        plugin:
+          kind: TimeSeriesTable
+          spec: {}
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum by(service_name)
+                    (increase(dash0_metric_data_point_count_total{$service_name}[24h]))
+                  seriesNameFormat: "{{service_name}}"
+    bce8f62e-3685-4157-9200-4112ffb3ccbe:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Resources
+        plugin:
+          kind: GaugeChart
+          spec:
+            calculation: last-number
+            format:
+              decimalPlaces: 2
+              enforceMinimumFractionDigits: false
+              shortValues: false
+              signDisplay: auto
+              unit: decimal
+            max: 100
+            thresholds: {}
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: resources{$service_name}
+                  seriesNameFormat: Number of Resources
+    c67f5011-a981-48ee-8cec-1e02684e8d43:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Service 99th percentile
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds: {}
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: line
+              lineWidth: 1
+              palette:
+                mode: auto
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 2
+                enforceMinimumFractionDigits: false
+                shortValues: false
+                signDisplay: auto
+                unit: seconds
+              min: 0
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: histogram_quantile(0.99, sum by (service_name,le)
+                    (rate(spans_duration_seconds_bucket{$service_name}[$__interval])))
+                    OR on() vector(0)
+                  seriesNameFormat: "{{service_name}}"
+  variables:
+    - kind: Dash0FilterVariable
+      spec:
+        attributeKey: service_name
+        capturingRegexp: ""
+        display:
+          description: ""
+          hidden: false
+          name: Service Name
+        name: service_name
+        operator: is_set
+        values: []

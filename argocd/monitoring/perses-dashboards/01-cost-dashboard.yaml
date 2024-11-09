@@ -1,0 +1,534 @@
+apiVersion: perses.dev/v1alpha1
+kind: PersesDashboard
+metadata:
+  name: 01-cost-dashboard
+  namespace: dash0-system
+spec:
+  duration: 30m
+  display:
+    description: ""
+    name: Cost Dashboard
+  layouts:
+    - kind: Grid
+      spec:
+        items:
+          - content:
+              $ref: "#/spec/panels/06dddce1-c346-4e43-adf0-3f05a3d8b020"
+            height: 13
+            width: 8
+            x: 0
+            "y": 8
+          - content:
+              $ref: "#/spec/panels/06dddce1-c346-4e43-adf0-3f05a3d8b020-copy"
+            height: 13
+            width: 8
+            x: 8
+            "y": 8
+          - content:
+              $ref: "#/spec/panels/06dddce1-c346-4e43-adf0-3f05a3d8b020-copy-1"
+            height: 5
+            width: 8
+            x: 0
+            "y": 21
+          - content:
+              $ref: "#/spec/panels/06dddce1-c346-4e43-adf0-3f05a3d8b020-copy-copy"
+            height: 5
+            width: 8
+            x: 8
+            "y": 21
+          - content:
+              $ref: "#/spec/panels/06dddce1-c346-4e43-adf0-3f05a3d8b020-copy-1-copy"
+            height: 5
+            width: 8
+            x: 0
+            "y": 32
+          - content:
+              $ref: "#/spec/panels/06dddce1-c346-4e43-adf0-3f05a3d8b020-copy-copy-copy"
+            height: 5
+            width: 8
+            x: 8
+            "y": 32
+          - content:
+              $ref: "#/spec/panels/06dddce1-c346-4e43-adf0-3f05a3d8b020-copy-copy-1"
+            height: 13
+            width: 8
+            x: 16
+            "y": 8
+          - content:
+              $ref: "#/spec/panels/06dddce1-c346-4e43-adf0-3f05a3d8b020-copy-copy-copy-1"
+            height: 5
+            width: 8
+            x: 16
+            "y": 21
+          - content:
+              $ref: "#/spec/panels/06dddce1-c346-4e43-adf0-3f05a3d8b020-copy-copy-copy-copy"
+            height: 5
+            width: 8
+            x: 16
+            "y": 32
+          - content:
+              $ref: "#/spec/panels/b3c465c9-f8fc-41f8-85f5-862effba8fc5"
+            height: 6
+            width: 8
+            x: 0
+            "y": 26
+          - content:
+              $ref: "#/spec/panels/b3c465c9-f8fc-41f8-85f5-862effba8fc5-copy"
+            height: 6
+            width: 8
+            x: 8
+            "y": 26
+          - content:
+              $ref: "#/spec/panels/b3c465c9-f8fc-41f8-85f5-862effba8fc5-copy-copy"
+            height: 6
+            width: 8
+            x: 16
+            "y": 26
+          - content:
+              $ref: "#/spec/panels/348420e0-9dc2-433a-8d8c-83a0e290f031"
+            height: 8
+            width: 8
+            x: 0
+            "y": 0
+          - content:
+              $ref: "#/spec/panels/0f930152-26a4-4509-93b1-2f6005cbbe94"
+            height: 8
+            width: 8
+            x: 8
+            "y": 0
+          - content:
+              $ref: "#/spec/panels/23d75cc3-234e-4544-9645-efed604a6608"
+            height: 8
+            width: 8
+            x: 16
+            "y": 0
+  panels:
+    06dddce1-c346-4e43-adf0-3f05a3d8b020:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Spans by Service Name (last 24h)
+        plugin:
+          kind: TimeSeriesTable
+          spec:
+            format:
+              decimalPlaces: 2
+              enforceMinimumFractionDigits: false
+              shortValues: true
+              signDisplay: auto
+              unit: decimal
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum by (service_name) (increase(spans_total{$service_name_filter}[24h]))
+                  seriesNameFormat: ""
+    06dddce1-c346-4e43-adf0-3f05a3d8b020-copy:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Cost for Spans by Service Name (last 24h)
+        plugin:
+          kind: TimeSeriesTable
+          spec:
+            format:
+              decimalPlaces: 2
+              enforceMinimumFractionDigits: false
+              shortValues: false
+              signDisplay: auto
+              unit: currency-usd
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum by (service_name)
+                    (increase(spans_total{$service_name_filter}[24h]))/1000000*$price_per_1m_logs_spans
+                  seriesNameFormat: ""
+    06dddce1-c346-4e43-adf0-3f05a3d8b020-copy-1:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Logs by K8s Namespace (last 24h)
+        plugin:
+          kind: TimeSeriesTable
+          spec: {}
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum by (k8s_namespace_name)
+                    (increase(dash0_log_record_count_total{$service_name_filter}[24h]))
+                  seriesNameFormat: ""
+    06dddce1-c346-4e43-adf0-3f05a3d8b020-copy-1-copy:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Debug Logs by K8s Namespace (last 24h)
+        plugin:
+          kind: TimeSeriesTable
+          spec: {}
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum by (k8s_namespace_name)
+                    (increase(logs_total{$service_name_filter,otel_log_severity_range="debug"}[24h]))
+                  seriesNameFormat: ""
+    06dddce1-c346-4e43-adf0-3f05a3d8b020-copy-copy:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Cost for Logs by K8s Namespace (last 24h)
+        plugin:
+          kind: TimeSeriesTable
+          spec:
+            format:
+              decimalPlaces: 2
+              enforceMinimumFractionDigits: false
+              shortValues: false
+              signDisplay: auto
+              unit: currency-usd
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum by (k8s_namespace_name)
+                    (increase(dash0_log_record_count_total{$service_name_filter}[24h])/1000000*$price_per_1m_logs_spans)
+                  seriesNameFormat: ""
+    06dddce1-c346-4e43-adf0-3f05a3d8b020-copy-copy-1:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Spans by Service Name Forecast Monthly Costs
+        plugin:
+          kind: TimeSeriesTable
+          spec:
+            format:
+              decimalPlaces: 2
+              enforceMinimumFractionDigits: false
+              shortValues: false
+              signDisplay: auto
+              unit: currency-usd
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum by (service_name)
+                    (increase(spans_total{$service_name_filter}[24h]))/1000000*$price_per_1m_logs_spans*30
+                  seriesNameFormat: ""
+    06dddce1-c346-4e43-adf0-3f05a3d8b020-copy-copy-copy:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Cost for Logs by K8s Namespace (last 24h)
+        plugin:
+          kind: TimeSeriesTable
+          spec:
+            format:
+              decimalPlaces: 2
+              enforceMinimumFractionDigits: false
+              shortValues: false
+              signDisplay: auto
+              unit: currency-usd
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum by (k8s_namespace_name)
+                    (increase(logs_total{$service_name_filter,otel_log_severity_range="debug"}[24h]))/1000000*$price_per_1m_logs_spans
+                  seriesNameFormat: ""
+    06dddce1-c346-4e43-adf0-3f05a3d8b020-copy-copy-copy-1:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Logs by K8s Namespace Forecast Monthly Costs
+        plugin:
+          kind: TimeSeriesTable
+          spec:
+            format:
+              decimalPlaces: 2
+              enforceMinimumFractionDigits: false
+              shortValues: false
+              signDisplay: auto
+              unit: currency-usd
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum by (k8s_namespace_name)
+                    (increase(dash0_log_record_count_total{$service_name_filter}[24h]))/1000000*$price_per_1m_logs_spans*30
+                  seriesNameFormat: ""
+    06dddce1-c346-4e43-adf0-3f05a3d8b020-copy-copy-copy-copy:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Logs by K8s Namespace Forecast Monthly Costs
+        plugin:
+          kind: TimeSeriesTable
+          spec:
+            format:
+              decimalPlaces: 2
+              enforceMinimumFractionDigits: false
+              shortValues: false
+              signDisplay: auto
+              unit: currency-usd
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum by (k8s_namespace_name)
+                    (increase(logs_total{$service_name_filter,otel_log_severity_range="debug"}[24h]))/1000000*$price_per_1m_logs_spans*30
+                  seriesNameFormat: ""
+    0f930152-26a4-4509-93b1-2f6005cbbe94:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Cost for Spans by Service Name (hourly)
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds: {}
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: line
+              lineWidth: 1
+              palette:
+                mode: auto
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 2
+                enforceMinimumFractionDigits: false
+                shortValues: false
+                signDisplay: auto
+                unit: currency-usd
+              min: 0
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum by (service_name)
+                    (increase(spans_total{$service_name_filter}[1h]))/1000000*$price_per_1m_logs_spans
+                  seriesNameFormat: "{{service_name}}"
+    23d75cc3-234e-4544-9645-efed604a6608:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Overall Daily Costs
+        plugin:
+          kind: GaugeChart
+          spec:
+            calculation: last-number
+            format:
+              decimalPlaces: 2
+              enforceMinimumFractionDigits: false
+              shortValues: false
+              signDisplay: auto
+              unit: currency-usd
+            max: 100
+            thresholds:
+              steps:
+                - color: "#56b6c2"
+                  value: 0
+                - color: "#e5c07b"
+                  value: 100
+                - color: "#e06c75"
+                  value: 500
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum
+                    (increase(spans_total{$service_name_filter}[24h]))/1000000*$price_per_1m_logs_spans
+                    + sum
+                    (increase(logs_total{$service_name_filter}[24h]))/1000000*$price_per_1m_logs_spans
+                    + sum
+                    (increase(metric_datapoints_total{$service_name_filter}[24h]))/1000000*$price_per_1m_metric_points
+                  seriesNameFormat: ""
+    348420e0-9dc2-433a-8d8c-83a0e290f031:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Spans by Service Name
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds: {}
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: line
+              lineWidth: 1
+              palette:
+                mode: auto
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 2
+                enforceMinimumFractionDigits: false
+                shortValues: false
+                signDisplay: auto
+                unit: decimal
+              min: 0
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum by (service_name)
+                    (increase(spans_total{$service_name_filter}[$__interval]))
+                  seriesNameFormat: "{{service_name}}"
+    b3c465c9-f8fc-41f8-85f5-862effba8fc5:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Metric Data Points by Service (last 24h)
+        plugin:
+          kind: TimeSeriesTable
+          spec:
+            format:
+              decimalPlaces: 2
+              enforceMinimumFractionDigits: false
+              shortValues: true
+              signDisplay: auto
+              unit: decimal
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum by (service_name)
+                    (increase(dash0_metric_data_point_count_total{$service_name_filter}[24h]))
+                  seriesNameFormat: "{{service_name}}"
+    b3c465c9-f8fc-41f8-85f5-862effba8fc5-copy:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Metric Data Points Costs by Service (last 24h)
+        plugin:
+          kind: TimeSeriesTable
+          spec:
+            format:
+              decimalPlaces: 2
+              enforceMinimumFractionDigits: false
+              shortValues: false
+              signDisplay: auto
+              unit: currency-usd
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum by (service_name)
+                    (increase(dash0_metric_data_point_count_total{$service_name_filter}[24h]))/1000000*$price_per_1m_metric_points
+                  seriesNameFormat: "{{service_name}}"
+    b3c465c9-f8fc-41f8-85f5-862effba8fc5-copy-copy:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Metric Data Points by Service Forecast Monthly Costs
+        plugin:
+          kind: TimeSeriesTable
+          spec:
+            format:
+              decimalPlaces: 2
+              enforceMinimumFractionDigits: false
+              shortValues: false
+              signDisplay: auto
+              unit: currency-usd
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum by (service_name)
+                    (increase(dash0_metric_data_point_count_total{$service_name_filter}[24h]))/1000000*$price_per_1m_metric_points*30
+                  seriesNameFormat: "{{service_name}}"
+  variables:
+    - kind: Dash0FilterVariable
+      spec:
+        attributeKey: service_name
+        capturingRegexp: ""
+        display:
+          description: ""
+          hidden: false
+          name: Service Name
+        name: service_name_filter
+        operator: is_set
+        values: []
+    - kind: TextVariable
+      spec:
+        constant: false
+        display:
+          description: ""
+          hidden: false
+          name: Price 1M Logs/Spans
+        name: price_per_1m_logs_spans
+        value: "0.60"
+    - kind: TextVariable
+      spec:
+        constant: false
+        display:
+          description: ""
+          hidden: false
+          name: Price 1M Metric Data Points
+        name: price_per_1m_metric_points
+        value: "0.20"
