@@ -37,28 +37,7 @@ spec:
             apiEndpoint: {{ .Values.dash0Operator.dash0Export.apiEndpoint }}
             token: {{ .Values.dash0Token }}
           {{- end }}
-          developmentMode: {{ .Values.dash0Operator.developmentMode }}
 ---
-{{- if or .Values.dash0Operator.persesDashboards.enabled .Values.dash0Operator.prometheusAlerts.enabled }}
-# Perses dashboards and Prometheus rule resources are deployed in the dash0-system namespace. The operator only synchronizes
-# dashboards and rules to the Dash0 API if there is a monitoring resource in the same namespace, so we deploy one there to opt in
-# to API synchronization. It does not need an export because the API connection settings default to the settings from the
-# cluster-scoped Dash0 operator configuration resource.
-apiVersion: operator.dash0.com/v1alpha1
-kind: Dash0Monitoring
-metadata:
-  name: dash0-monitoring-resource-for-api-sync
-  namespace: dash0-system
-spec:
-  # The workloads in dash0-system are monitored by self-monitoring, no need to instrument them or have them scraped by Prometheus.
-  instrumentWorkloads: none
-  prometheusScrapingEnabled: false
-  # The two synchronizeXxx options default to true anyway, but having them listed here explicitly makes the intent of this
-  # resource a bit clearer.
-  synchronizePersesDashboards: true
-  synchronizePrometheusRules: true
----
-{{ end }}
 # Additional RBAC permissions required for running opentelemetry-collector in daemonset mode
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
