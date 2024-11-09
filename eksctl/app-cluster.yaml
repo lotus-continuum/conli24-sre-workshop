@@ -9,11 +9,16 @@ metadata:
 kubernetesNetworkConfig:
   ipFamily: IPv4 # or IPv6
 
+#####################################################################################
+# Maximum number of pods per node:
+# https://github.com/aws/amazon-vpc-cni-k8s/blob/master/misc/eni-max-pods.txt
+# t4g.large = 35 pods
+
 managedNodeGroups:
   - name: worker-nodes
     instanceType: t4g.large
     minSize: 1
-    maxSize: 3
+    maxSize: 2
     desiredCapacity: 2
     volumeSize: 20
     labels: {role: worker}
