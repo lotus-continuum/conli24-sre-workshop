@@ -57,6 +57,6 @@ Handling connection for 8080
 # Cleanup everything
 
 ```
-❯ helm delete workshop-otel-demo
+❯ helm delete workshop-otel-demo -n otel-demo
 release "workshop-otel-demo" uninstalled
 ```
