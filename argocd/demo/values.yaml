@@ -100,9 +100,4 @@ otelDemo:
               - memory_limiter
               - resourcedetection
               - batch
-
-opentelemetryCollectorDeployment:
-  enabled: false
-  version: 0.90.1
-  autoSync: true
-  prune: true
+x

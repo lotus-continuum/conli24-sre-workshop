@@ -27,7 +27,13 @@ spec:
     repoURL: registry-1.docker.io/bitnamicharts
     targetRevision: {{ .Values.otelDemoPostgres.version }}
     helm:
-      values: | {{ toYaml .Values.otelDemoPostgres.helm | nindent 8 }}
+      global:
+        storageClass: "gp2"
+        postgresql:
+          auth:
+            username: "ffs"
+            password: "ffs"
+            database: "ffs"
 ---
 apiVersion: v1
 kind: Service
