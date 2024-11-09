@@ -140,11 +140,4 @@ rules:
       - list
       - watch
 ---
-# Monitor namespaces with Dash0
-apiVersion: operator.dash0.com/v1alpha1
-kind: Dash0Monitoring
-metadata:
-  name: dash0-monitoring-resource
-  namespace: argocd
----
 {{- end }}
