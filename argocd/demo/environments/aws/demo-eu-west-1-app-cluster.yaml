@@ -10,4 +10,4 @@ otelDemoPostgres:
           database: "ffs"
 
 otelDemo:
-  enabled: false
+  enabled: true
