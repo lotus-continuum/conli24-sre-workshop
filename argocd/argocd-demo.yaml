@@ -22,7 +22,7 @@ spec:
       values: |
         clusterName: demo-eu-west-1-app-cluster
         region: eu-west-1
-        dash0Token: auth_nkCOzkm8oBqfi90e87o7JAbyOjSZ51Sp
+        dash0Token: <PLEASE FILL>
   syncPolicy:
     automated:
       prune: true
