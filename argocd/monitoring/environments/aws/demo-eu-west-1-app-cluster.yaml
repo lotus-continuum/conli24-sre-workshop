@@ -1,2 +1,8 @@
 opentelemetryCollectorDeployment:
   enabled: true
+dash0Operator:
+  enabled: true
+  dash0Export:
+    enabled: true
+    endpoint: ingress.eu-west-1.aws.dash0-dev.com:4317
+    apiEndpoint: https://api.eu-west-1.aws.dash0-dev.com

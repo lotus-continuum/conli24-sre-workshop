@@ -1,3 +1,7 @@
+IMPORTANT:
+
+We are using ArgoCD now to install the dash0-operator. Please refer to the ArgoCD section in the argocd/README.md file.
+
 ## Setup Dash0 Operator
 
 ```
@@ -24,4 +28,11 @@ kind: Dash0Monitoring
 metadata:
   name: dash0-monitoring-resource
 EOF
+```
+
+# Cleanup everything
+
+```
+❯ helm delete dash0-operator -n dash0-system
+release "dash0-operator" uninstalled
 ```
