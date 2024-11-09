@@ -1,0 +1,28 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: dash0-demo
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  project: default
+  source:
+    path: argocd/demo/
+    repoURL: git@github.com:lotus-continuum/conli24-sre-workshop.git
+    targetRevision: main
+    helm:
+      # don't fail if there are new environment specific values in the repo
+      ignoreMissingValueFiles: true
+      valueFiles: [ environments/aws/demo-eu-west-1-app-cluster.yaml ]
+      values: |
+        clusterName: demo-eu-west-1-app-cluster
+        region: eu-west-1
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

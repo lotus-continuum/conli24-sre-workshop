@@ -1,0 +1,144 @@
+{{- if .Values.opentelemetryCollectorDeployment.enabled }}
+{{/*
+An additional OTel collector deployment in addition to the daemonset we install with the opentelemetry-demo chart.
+It is used to collect cluster metrics.
+*/}}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: opentelemetry-collector-deployment
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: open-telemetry
+    name: in-cluster
+  project: default
+  syncPolicy:
+    automated:
+{{ if .Values.opentelemetryCollectorDeployment.autoSync }}
+      selfHeal: true
+{{- end }}
+{{- if .Values.opentelemetryCollectorDeployment.prune }}
+      prune: true
+{{- end }}
+    syncOptions:
+      - CreateNamespace=true
+  source:
+    chart: opentelemetry-collector
+    repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
+    targetRevision: {{ .Values.opentelemetryCollectorDeployment.version }}
+    helm:
+      values: | {{ toYaml .Values.opentelemetryCollectorDeployment.helm | nindent 8 }}
+
+---
+# Additional RBAC permissions required for running opentelemetry-collector in deployment mode
+# Related to https://linear.app/dash0/issue/ENG-732/failed-to-watch-v1node-failed-to-list-v1node-nodes-is-forbidden
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: opentelemetry-collector-deployment-additional
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: opentelemetry-collector-deployment-additional
+subjects:
+  - kind: ServiceAccount
+    name: opentelemetry-collector-deployment
+    namespace: open-telemetry
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: opentelemetry-collector-deployment-additional
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - endpoints
+    verbs:
+      - get
+      - watch
+      - list
+
+  # Required for kubeletstats receiver
+  - apiGroups: [""]
+    resources: ["nodes/stats"]
+    verbs: ["get"]
+
+  # Required for kubeletstats receiver to retrieve metrics from persistentvolumes, ...
+  # https://github.com/honeycombio/field-utils/blob/main/collector-configs/k8s-metrics/03-clusterrole.yaml
+  - apiGroups:
+      - ""
+    resources:
+      - events
+      - namespaces
+      - namespaces/status
+      - nodes
+      - nodes/metrics
+      - nodes/spec
+      - nodes/stats
+      - nodes/proxy
+      - persistentvolumes
+      - persistentvolumeclaims
+      - pods
+      - pods/status
+      - replicationcontrollers
+      - replicationcontrollers/status
+      - resourcequotas
+      - services
+    verbs:
+      - get
+      - list
+      - watch
+
+  - apiGroups:
+      - apps
+    resources:
+      - daemonsets
+      - deployments
+      - replicasets
+      - statefulsets
+    verbs:
+      - get
+      - list
+      - watch
+
+  - apiGroups:
+      - extensions
+    resources:
+      - daemonsets
+      - deployments
+      - replicasets
+    verbs:
+      - get
+      - list
+      - watch
+
+  - apiGroups:
+      - batch
+    resources:
+      - jobs
+      - cronjobs
+    verbs:
+      - get
+      - list
+      - watch
+
+  - apiGroups:
+      - autoscaling
+    resources:
+      - horizontalpodautoscalers
+    verbs:
+      - get
+      - list
+      - watch
+
+  - nonResourceURLs:
+      - "/metrics"
+    verbs:
+      - get
+---
+{{- end }}

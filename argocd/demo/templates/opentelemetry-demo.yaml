@@ -1,0 +1,32 @@
+{{ if .Values.otelDemo.enabled }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: opentelemetry-demo
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: otel-demo
+    name: in-cluster
+  project: default
+  syncPolicy:
+    automated:
+{{- if .Values.otelDemo.autoSync }}
+      selfHeal: true
+{{- end }}
+{{- if .Values.otelDemo.prune }}
+      prune: true
+{{- end }}
+    syncOptions:
+      - CreateNamespace=true
+  source:
+    chart: opentelemetry-demo
+    repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
+    targetRevision: {{ .Values.otelDemo.version }}
+    helm:
+      values: | {{ toYaml .Values.otelDemo.helm | nindent 8 }}
+---
+{{ end }}
