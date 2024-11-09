@@ -1,0 +1,50 @@
+{{ if .Values.otelDemoPostgres.enabled }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: opentelemetry-demo-postgres
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: otel-demo
+    name: in-cluster
+  project: default
+  syncPolicy:
+    automated:
+{{- if .Values.otelDemoPostgres.autoSync }}
+      selfHeal: true
+{{- end }}
+{{- if .Values.otelDemoPostgres.prune }}
+      prune: true
+{{- end }}
+    syncOptions:
+      - CreateNamespace=true
+  source:
+    chart: postgresql
+    repoURL: registry-1.docker.io/bitnamicharts
+    targetRevision: {{ .Values.otelDemoPostgres.version }}
+    helm:
+      values: | {{ toYaml .Values.otelDemoPostgres.helm | nindent 8 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: opentelemetry-demo-ffspostgres
+  namespace: otel-demo
+spec:
+  internalTrafficPolicy: Cluster
+  ports:
+    - name: tcp-postgresql
+      port: 5432
+      protocol: TCP
+      targetPort: tcp-postgresql
+  selector:
+    app.kubernetes.io/component: primary
+    app.kubernetes.io/instance: opentelemetry-demo-postgres
+    app.kubernetes.io/name: postgresql
+  type: ClusterIP
+---
+{{ end }}
