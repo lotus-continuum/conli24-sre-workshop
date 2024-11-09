@@ -139,4 +139,11 @@ rules:
       - get
       - list
       - watch
+---
+apiVersion: operator.dash0.com/v1alpha1
+kind: Dash0Monitoring
+metadata:
+  name: dash0-monitoring-resource
+  namespace: otel-demo
+---
 {{- end }}
