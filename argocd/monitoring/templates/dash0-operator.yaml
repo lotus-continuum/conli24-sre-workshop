@@ -1,0 +1,163 @@
+{{- if .Values.dash0Operator.enabled }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: dash0-operator
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: dash0-system
+    name: in-cluster
+  project: default
+  syncPolicy:
+    automated:
+{{- if .Values.dash0Operator.autoSync }}
+      selfHeal: true
+{{- end }}
+{{- if .Values.dash0Operator.prune }}
+      prune: true
+{{- end }}
+    syncOptions:
+      - CreateNamespace=true
+  source:
+    chart: dash0-operator
+    repoURL: https://dash0hq.github.io/dash0-operator
+    targetRevision: {{ .Values.dash0Operator.version }}
+    helm:
+      values: |
+        # configuration section for the Dash0 Kubernetes Operator
+        operator:
+          {{- if .Values.dash0Operator.dash0Export.enabled }}
+          dash0Export:
+            enabled: {{ .Values.dash0Operator.dash0Export.enabled }}
+            endpoint: {{ .Values.dash0Operator.dash0Export.endpoint }}
+            apiEndpoint: {{ .Values.dash0Operator.dash0Export.apiEndpoint }}
+            token: {{ .Values.dash0Token }}
+          {{- end }}
+          developmentMode: {{ .Values.dash0Operator.developmentMode }}
+---
+{{- if or .Values.dash0Operator.persesDashboards.enabled .Values.dash0Operator.prometheusAlerts.enabled }}
+# Perses dashboards and Prometheus rule resources are deployed in the dash0-system namespace. The operator only synchronizes
+# dashboards and rules to the Dash0 API if there is a monitoring resource in the same namespace, so we deploy one there to opt in
+# to API synchronization. It does not need an export because the API connection settings default to the settings from the
+# cluster-scoped Dash0 operator configuration resource.
+apiVersion: operator.dash0.com/v1alpha1
+kind: Dash0Monitoring
+metadata:
+  name: dash0-monitoring-resource-for-api-sync
+  namespace: dash0-system
+spec:
+  # The workloads in dash0-system are monitored by self-monitoring, no need to instrument them or have them scraped by Prometheus.
+  instrumentWorkloads: none
+  prometheusScrapingEnabled: false
+  # The two synchronizeXxx options default to true anyway, but having them listed here explicitly makes the intent of this
+  # resource a bit clearer.
+  synchronizePersesDashboards: true
+  synchronizePrometheusRules: true
+---
+{{ end }}
+# Additional RBAC permissions required for running opentelemetry-collector in daemonset mode
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: dash0-operator-opentelemetry-collector-additional
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: dash0-operator-opentelemetry-collector-additional
+subjects:
+  - kind: ServiceAccount
+    name: dash0-operator-opentelemetry-collector
+    namespace: dash0-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: dash0-operator-opentelemetry-collector-additional
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - nodes
+      - endpoints
+      - services
+    verbs:
+      - get
+      - watch
+      - list
+
+  # Required for kubeletstats receiver
+  - apiGroups: [""]
+    resources: ["nodes/stats"]
+    verbs: ["get"]
+  # Only needed if you are using extra_metadata_labels or
+  # are collecting the request/limit utilization metrics
+  - apiGroups: [""]
+    resources: ["nodes/proxy"]
+    verbs: ["get"]
+  # Required for kubeletstats receiver to retrieve metrics from persistentvolumes, ...
+  # https://github.com/honeycombio/field-utils/blob/main/collector-configs/k8s-metrics/03-clusterrole.yaml
+  - apiGroups:
+      - ""
+    resources:
+      - events
+      - namespaces
+      - namespaces/status
+      - nodes
+      - nodes/spec
+      - nodes/stats
+      - nodes/proxy
+      - persistentvolumes
+      - persistentvolumeclaims
+      - pods
+      - pods/status
+      - replicationcontrollers
+      - replicationcontrollers/status
+      - resourcequotas
+      - services
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - apps
+    resources:
+      - daemonsets
+      - deployments
+      - replicasets
+      - statefulsets
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - extensions
+    resources:
+      - daemonsets
+      - deployments
+      - replicasets
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - batch
+    resources:
+      - jobs
+      - cronjobs
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - autoscaling
+    resources:
+      - horizontalpodautoscalers
+    verbs:
+      - get
+      - list
+      - watch
+{{- end }}

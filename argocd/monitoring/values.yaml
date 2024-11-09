@@ -3,3 +3,8 @@ opentelemetryCollectorDeployment:
   version: 0.90.1
   autoSync: true
   prune: true
+dash0Operator:
+  autoSync: true
+  prune: true
+  enabled: false
+  version: 0.32.1
