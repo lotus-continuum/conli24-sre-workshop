@@ -10,7 +10,7 @@ opentelemetry-collector:
     extensions:
       bearertokenauth/dash0:
         scheme: "Bearer"
-        token: "auth_eF01S0iwMVqYYBDmp4MmD7jnCYzQxv5E"
+        token: "<REPLACE TOKEN>"
     exporters:
       "otlp/dash0":
         endpoint: 'ingress.eu-west-1.aws.dash0-dev.com:4317'
