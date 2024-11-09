@@ -1,5 +1,5 @@
 otelDemoPostgres:
-  enabled: false
+  enabled: true
   helm:
     global:
       storageClass: "gp2"
