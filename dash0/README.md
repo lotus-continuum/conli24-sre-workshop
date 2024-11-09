@@ -4,8 +4,10 @@
 helm repo add dash0-operator https://dash0hq.github.io/dash0-operator
 helm repo update
 
+export DASH0_TOKEN=...
+
 kubectl create namespace dash0-system
-kubectl create secret generic dash0-authorization-secret --namespace dash0-system --from-literal=token=auth_nkCOzkm8oBqfi90e87o7JAbyOjSZ51Sp
+kubectl create secret generic dash0-authorization-secret --namespace dash0-system --from-literal=token=${DASH0_TOKEN}
 
 helm install \
   --namespace dash0-system \
