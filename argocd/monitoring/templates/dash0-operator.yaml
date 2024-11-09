@@ -34,7 +34,7 @@ spec:
           dash0Export:
             enabled: {{ .Values.dash0Operator.dash0Export.enabled }}
             endpoint: {{ .Values.dash0Operator.dash0Export.endpoint }}
-            apiEndpoint: {{ .Values.dash0Operator.dash0Export.apiEndpoint }}
+            name: {{ .Values.dash0Operator.dash0Export.name }}
             token: {{ .Values.dash0Token }}
           {{- end }}
 ---

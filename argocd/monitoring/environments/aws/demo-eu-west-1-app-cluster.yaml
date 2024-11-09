@@ -4,5 +4,6 @@ dash0Operator:
   enabled: true
   dash0Export:
     enabled: true
-    endpoint: ingress.eu-west-1.aws.dash0-dev.com:4317
-    apiEndpoint: https://api.eu-west-1.aws.dash0-dev.com
+    endpoint: ingress.eu-west-1.aws.dash0.com:4317
+    name: dash0-authorization-secret
+    apiEndpoint: https://api.eu-west-1.aws.dash0.com
