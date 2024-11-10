@@ -47,7 +47,7 @@ spec:
               value: 'opentelemetry-demo-featureflagservice:50053'
         components:
           adService:
-            replicas: 3
+            replicas: 2
           frontend:
             replicas: 1
           frontendProxy:
