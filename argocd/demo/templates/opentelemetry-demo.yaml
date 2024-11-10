@@ -54,18 +54,11 @@ spec:
             resources:
               limits:
                 memory: 500Mi
-          featureFlagService:
+          featureflagService:
+            enabled: true
             envOverrides:
-              - name: FEATURE_FLAG_SERVICE_PORT
-                value: 8081
-              - name: FEATURE_FLAG_GRPC_SERVICE_PORT
-                value: 50053
               - name: DATABASE_URL
                 value: "ecto://postgres:postgres@opentelemetry-demo-ffspostgres:5432/public"
-              - name: OTEL_EXPORTER_OTLP_ENDPOINT
-                value: "http://$(OTEL_COLLECTOR_NAME):4317"
-              - name: OTEL_EXPORTER_OTLP_TRACES_PROTOCOL
-                value: "grpc"
           # we are using our own postgresql with persistent volume
           ffsPostgres:
             enabled: false
