@@ -11,3 +11,5 @@ dash0Operator:
     enabled: true
   prometheusAlerts:
     enabled: true
+  selfMonitoring:
+    enabled: false
