@@ -1,7 +1,7 @@
 apiVersion: perses.dev/v1alpha1
 kind: PersesDashboard
 metadata:
-  name: 34-sre-errors-spans
+  name: 11-sre-errors-spans
   namespace: dash0-system
 spec:
   duration: 30m

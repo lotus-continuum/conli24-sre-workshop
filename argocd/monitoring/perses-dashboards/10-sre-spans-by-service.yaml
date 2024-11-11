@@ -1,7 +1,7 @@
 apiVersion: perses.dev/v1alpha1
 kind: PersesDashboard
 metadata:
-  name: 30-sre-spans-by-service
+  name: 10-sre-spans-by-service
   namespace: dash0-system
 spec:
   duration: 30m
