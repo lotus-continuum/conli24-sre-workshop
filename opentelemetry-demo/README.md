@@ -56,6 +56,7 @@ Handling connection for 8080
 - Grafana              http://localhost:8080/grafana/
 - Load Generator UI    http://localhost:8080/loadgen/
 - Jaeger UI            http://localhost:8080/jaeger/ui/
+- Feature Flags UI     http://localhost:8080/feature/
 
 
 # Cleanup everything

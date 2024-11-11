@@ -7,7 +7,7 @@ dash0Operator:
   autoSync: true
   prune: true
   enabled: false
-  version: 0.32.1
+  version: 0.33.0
 steadybitAgent:
   enabled: true
   autoSync: true
