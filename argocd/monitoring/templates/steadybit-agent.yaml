@@ -25,7 +25,7 @@ spec:
   source:
     chart: steadybit-agent
     repoURL: https://steadybit.github.io/helm-charts
-    targetRevision: HEAD
+    targetRevision: {{ .Values.steadybitAgent.version }}
     helm:
       values: |
       global:
