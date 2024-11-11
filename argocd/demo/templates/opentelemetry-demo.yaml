@@ -48,6 +48,10 @@ spec:
         components:
           adService:
             replicas: 2
+          cartService:
+            resources:
+              limits:
+                memory: 16Mi
           frontend:
             replicas: 1
           frontendProxy:
