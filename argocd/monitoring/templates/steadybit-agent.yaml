@@ -28,15 +28,15 @@ spec:
     targetRevision: {{ .Values.steadybitAgent.version }}
     helm:
       values: |
-      global:
-        clusterName: "app-cluster"
-      extension-container:
-        container:
-          runtime: containerd
-      agent:
-        key: {{ .Values.steadybitAgent.agentKey }}
-        registerUrl: https://platform.steadybit.com
-        persistence:
-          filesystem:
-            storageClass: gp2
+        global:
+          clusterName: "app-cluster"
+        extension-container:
+          container:
+            runtime: containerd
+        agent:
+          key: {{ .Values.steadybitAgent.agentKey }}
+          registerUrl: https://platform.steadybit.com
+          persistence:
+            filesystem:
+              storageClass: gp2
 {{- end }}
