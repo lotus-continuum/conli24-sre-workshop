@@ -23,5 +23,53 @@ spec:
             threshold-critical: "5"
             threshold-degraded: "1"
           labels:
+            priority: p2
+            team: backend
+        - alert: High log rate of WARN log records
+          expr: 'sum by (service_name,service_namespace,service_instance_id) (rate(logs_total{otel_log_severity_range = "WARN"}[1m0s]))/sum by (service_name,service_namespace,service_instance_id) (rate(logs_total[1m0s])) *100 > $__threshold'
+          for: 0s
+          keep_firing_for: 0s
+          annotations:
+            description: "High rate of WARN log records for service {{$labels.service_name}}"
+            summary: "High rate of WARN log records for service {{$labels.service_name}}"
+            threshold-critical: "50"
+            threshold-degraded: "40"
+          labels:
             priority: p3
+            team: backend
+        - alert: HTTP Errors on Checkout Service
+          expr: 'sum (increase({otel_metric_name = "spans_total", service_name = "checkoutservice", http_status_code != "200"}[1m0s])) > $__threshold'
+          for: 0s
+          keep_firing_for: 0s
+          annotations:
+            description: "HTTP Errors on Checkout Service"
+            summary: "HTTP Errors on Checkout Service is higher than 100 / 200 per minute"
+            threshold-critical: "200"
+            threshold-degraded: "100"
+          labels:
+            priority: p1
+            team: backend
+        - alert: OTel Demo Service Error Rates by Operation
+          expr: 'sum by (dash0_operation_name) (increase(dash0_spans_total{otel_span_status_code="ERROR"}[1m])) / sum by (dash0_operation_name) (increase(dash0_spans_total{}[1m]))*100 > $__threshold'
+          for: 0s
+          keep_firing_for: 0s
+          annotations:
+            description: "{{$labels.dash0_operation_name}} has too many errors in 1 minute time range."
+            summary: "{{$labels.dash0_operation_name}} has too many errors"
+            threshold-critical: "80"
+            threshold-degraded: "50"
+          labels:
+            priority: p1
+            team: backend
+        - alert: Service Error Rate
+          expr: 'sum by (service_name,service_namespace,k8s_pod_uid,k8s_pod_name,dash0_resource_id,dash0_resource_name,dash0_resource_type) (rate(spans_total{otel_span_status_code = "ERROR"}[1m0s]))/sum by (service_name,service_namespace,k8s_pod_uid,k8s_pod_name,dash0_resource_id,dash0_resource_name,dash0_resource_type) (rate(spans_total[1m0s])) * 100 > $__threshold'
+          for: 0s
+          keep_firing_for: 0s
+          annotations:
+            description: "The error rate of the specific service is too high. (degraded: 60, critical 80)"
+            summary: "Pod {{$labels.k8s_pod_name}} of {{$labels.service_name}} has too many errors"
+            threshold-critical: "80"
+            threshold-degraded: "60"
+          labels:
+            priority: p1
             team: backend

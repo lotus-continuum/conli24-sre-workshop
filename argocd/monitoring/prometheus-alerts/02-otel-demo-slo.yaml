@@ -1,0 +1,39 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    prometheus: k8s
+    role: alert-rules
+  name: 02-otel-demo-slo
+  namespace: dash0-system
+spec:
+  groups:
+    - name: sre - otel-demo slo
+      interval: 1m
+      limit: 10
+      partial_response_strategy: warn
+      rules:
+        - alert: "SLO: 99.5% of calls in 1h < 0.2s response time"
+          expr: '(sum(increase(dash0_spans_total{otel_span_duration<="0.2",otel_span_kind="server"}[1h])) by (service_name,dash0_operation_name) / sum(increase(dash0_spans_total{otel_span_kind="server"}[1h])) by (service_name,dash0_operation_name) )* 100  <= $__threshold'
+          for: 0s
+          keep_firing_for: 0s
+          annotations:
+            description: "SLO not met for service {{ $labels.service_name }} and operation  {{ $labels.dash0_operation_name }} "
+            summary: "SLO not met for service {{ $labels.service_name }} and operation  {{ $labels.dash0_operation_name }} "
+            threshold-critical: "99.5"
+            threshold-degraded: "99.5"
+          labels:
+            priority: p2
+            team: backend
+        - alert: "SLO: 99% of calls OK and < 1s response time"
+          expr: '(sum(increase(dash0_spans_total{otel_span_status_code!="ERROR", otel_span_duration<="1",otel_span_kind="server"}[1h])) by (service_name,dash0_operation_name) / sum(increase(dash0_spans_total{otel_span_kind="server"}[1h])) by (service_name,dash0_operation_name) )* 100  <= $__threshold'
+          for: 0s
+          keep_firing_for: 0s
+          annotations:
+            description: "SLO not met for service {{ $labels.service_name }} and operation  {{ $labels.dash0_operation_name }} "
+            summary: "SLO not met for service {{ $labels.service_name }} and operation  {{ $labels.dash0_operation_name }} "
+            threshold-critical: "99.5"
+            threshold-degraded: "99.5"
+          labels:
+            priority: p1
+            team: backend
