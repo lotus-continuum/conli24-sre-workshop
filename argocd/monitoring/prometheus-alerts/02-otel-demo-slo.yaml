@@ -8,7 +8,7 @@ metadata:
   namespace: dash0-system
 spec:
   groups:
-    - name: sre - otel-demo slo
+    - name: SLO
       interval: 1m
       limit: 10
       partial_response_strategy: warn
