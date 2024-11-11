@@ -50,37 +50,42 @@ Due to the lack of a proper migration tool, we need to run the schema migrations
 ```
 ❯ kubectl exec -it opentelemetry-demo-postgres-postgresql-0 -n otel-demo -- bash
 
-I have no name!@opentelemetry-demo-postgres-postgresql-0:/$ psql -U postgres
-Password for user postgres:
+I have no name!@opentelemetry-demo-postgres-postgresql-0:/$ psql -U ffs
+Password for user ffs:
 psql (16.1)
 Type "help" for help.
 
-postgres=# CREATE TABLE IF NOT EXISTS public.featureflags (
-postgres(#     name character varying(255),
-postgres(#     description character varying(255),
-postgres(#     enabled double precision DEFAULT 0.0 NOT NULL
-postgres(# );
+ffs=# CREATE TABLE IF NOT EXISTS public.featureflags (
+ffs(#     name character varying(255),
+ffs(#     description character varying(255),
+ffs(#     enabled double precision DEFAULT 0.0 NOT NULL
+ffs(# );
 CREATE TABLE
-postgres=# ALTER TABLE ONLY public.featureflags DROP CONSTRAINT IF EXISTS featureflags_pkey;
+ffs=# ALTER TABLE ONLY public.featureflags DROP CONSTRAINT IF EXISTS featureflags_pkey;
 ALTER TABLE
-postgres=# ALTER TABLE ONLY public.featureflags ADD CONSTRAINT featureflags_pkey PRIMARY KEY (name);
+ffs=# ALTER TABLE ONLY public.featureflags ADD CONSTRAINT featureflags_pkey PRIMARY KEY (name);
 ALTER TABLE
-postgres=#
-postgres=# CREATE UNIQUE INDEX IF NOT EXISTS featureflags_name_index ON public.featureflags USING btree (name);
+ffs=#
+ffs=# CREATE UNIQUE INDEX IF NOT EXISTS featureflags_name_index ON public.featureflags USING btree (name);
 CREATE INDEX
-postgres=# INSERT INTO public.featureflags (name, description, enabled)
-postgres-# VALUES
-postgres-#     ('productCatalogFailure', 'Fail product catalog service on a specific product', 0),
-postgres-#     ('recommendationCache', 'Cache recommendations', 0),
-postgres-#     ('adServiceFailure', 'Fail ad service requests', 0),
-postgres-#     ('cartServiceFailure', 'Fail cart service requests', 0),
-postgres-#     ('paymentServiceSimulateSlowness', 'Simulate slow response times in the payment service', 0),
-postgres-#     ('paymentServiceSimulateSlownessLowerBound', 'Minimum simulated delay in milliseconds in payment service, if enabled', 200),
-postgres-#     ('paymentServiceSimulateSlownessUpperBound', 'Maximum simulated delay in milliseconds in payment service, if enabled', 600),
-postgres-#     ('shippingServiceSimulateSlowness', 'Simulate slow response times in the shipping service', 0),
-postgres-#     ('shippingServiceSimulateSlownessLowerBound', 'Minimum simulated delay in milliseconds in shipping service, if enabled', 250),
-postgres-#     ('shippingServiceSimulateSlownessUpperBound', 'Maximum simulated delay in milliseconds in shipping service, if enabled', 400)
-postgres-#     ON CONFLICT DO NOTHING;
+ffs=# INSERT INTO public.featureflags (name, description, enabled)
+ffs-# VALUES
+ffs-#     ('productCatalogFailure', 'Fail product catalog service on a specific product', 0),
+ffs-#     ('recommendationCache', 'Cache recommendations', 0),
+ffs-#     ('adServiceFailure', 'Fail ad service requests', 0),
+ffs-#     ('cartServiceFailure', 'Fail cart service requests', 0),
+ffs-#     ('paymentServiceSimulateSlowness', 'Simulate slow response times in the payment service', 0),
+ffs-#     ('paymentServiceSimulateSlownessLowerBound', 'Minimum simulated delay in milliseconds in payment service, if enabled', 200),
+ffs-#     ('paymentServiceSimulateSlownessUpperBound', 'Maximum simulated delay in milliseconds in payment service, if enabled', 600),
+ffs-#     ('shippingServiceSimulateSlowness', 'Simulate slow response times in the shipping service', 0),
+ffs-#     ('shippingServiceSimulateSlownessLowerBound', 'Minimum simulated delay in milliseconds in shipping service, if enabled', 250),
+ffs-#     ('shippingServiceSimulateSlownessUpperBound', 'Maximum simulated delay in milliseconds in shipping service, if enabled', 400)
+ffs-#     ON CONFLICT DO NOTHING;
 INSERT 0 10
-postgres=#
+ffs=#
 ```
+
+Manually ran schema migrations
+
+- https://github.com/dash0hq/opentelemetry-demo/blob/main/src/ffspostgres/init-scripts/10-ffs_schema.sql
+- https://github.com/dash0hq/opentelemetry-demo/blob/main/src/ffspostgres/init-scripts/20-ffs_data.sql
