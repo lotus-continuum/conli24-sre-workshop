@@ -54,11 +54,6 @@ spec:
             resources:
               limits:
                 memory: 500Mi
-          featureflagService:
-            enabled: true
-            envOverrides:
-              - name: DATABASE_URL
-                value: "ecto://postgres:postgres@opentelemetry-demo-ffspostgres:5432/ffs"
           # we are using our own postgresql with persistent volume
           ffsPostgres:
             enabled: false
