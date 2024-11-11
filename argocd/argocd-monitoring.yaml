@@ -23,6 +23,8 @@ spec:
         clusterName: demo-eu-west-1-app-cluster
         region: eu-west-1
         dash0Token: <PLEASE FILL>
+        steadybitAgent:
+          agentKey: <PLEASE FILL>
   syncPolicy:
     automated:
       prune: true

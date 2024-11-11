@@ -8,3 +8,7 @@ dash0Operator:
   prune: true
   enabled: false
   version: 0.32.1
+steadybitAgent:
+  enabled: true
+  autoSync: true
+  prune: true

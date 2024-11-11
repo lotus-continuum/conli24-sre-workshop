@@ -1,0 +1,41 @@
+{{- if .Values.steadybitAgent.enabled }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: steadybit-agent
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: steadybit-agent
+    name: in-cluster
+  project: default
+  syncPolicy:
+    automated:
+{{- if .Values.steadybitAgent.autoSync }}
+      selfHeal: true
+{{- end }}
+{{- if .Values.steadybitAgent.prune }}
+      prune: true
+{{- end }}
+    syncOptions:
+      - CreateNamespace=true
+  source:
+    chart: steadybit-agent
+    repoURL: https://steadybit.github.io/helm-charts
+    helm:
+      values: |
+      global:
+        clusterName: "app-cluster"
+      extension-container:
+        container:
+          runtime: containerd
+      agent:
+        key: {{ .Values.steadybitAgent.agentKey }}
+        registerUrl: https://platform.steadybit.com
+        persistence:
+          filesystem:
+            storageClass: gp2
+{{- end }}
