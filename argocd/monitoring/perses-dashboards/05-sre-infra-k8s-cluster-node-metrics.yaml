@@ -1,0 +1,536 @@
+apiVersion: perses.dev/v1alpha1
+kind: PersesDashboard
+metadata:
+  name: 22-sre-infra-k8s-cluster-node-metrics
+  namespace: dash0-system
+spec:
+  duration: 30m
+  display:
+    description: ""
+    name: SRE - Infra - k8s cluster node metrics
+  layouts:
+    - kind: Grid
+      spec:
+        items:
+          - content:
+              $ref: "#/spec/panels/6f0fdf91-a42a-4460-92a6-4562eb82b641"
+            height: 9
+            width: 12
+            x: 0
+            "y": 0
+          - content:
+              $ref: "#/spec/panels/6f0fdf91-a42a-4460-92a6-4562eb82b641-copy"
+            height: 9
+            width: 12
+            x: 12
+            "y": 0
+          - content:
+              $ref: "#/spec/panels/6f0fdf91-a42a-4460-92a6-4562eb82b641-copy-1"
+            height: 9
+            width: 12
+            x: 0
+            "y": 9
+          - content:
+              $ref: "#/spec/panels/6f0fdf91-a42a-4460-92a6-4562eb82b641-copy-1-copy"
+            height: 9
+            width: 12
+            x: 12
+            "y": 9
+          - content:
+              $ref: "#/spec/panels/6f0fdf91-a42a-4460-92a6-4562eb82b641-copy-1-copy-copy"
+            height: 9
+            width: 12
+            x: 0
+            "y": 18
+          - content:
+              $ref: "#/spec/panels/6f0fdf91-a42a-4460-92a6-4562eb82b641-copy-1-copy-copy-copy"
+            height: 9
+            width: 12
+            x: 12
+            "y": 18
+          - content:
+              $ref: "#/spec/panels/6f0fdf91-a42a-4460-92a6-4562eb82b641-copy-1-copy-copy-copy\
+                -1"
+            height: 9
+            width: 12
+            x: 0
+            "y": 27
+          - content:
+              $ref: "#/spec/panels/6f0fdf91-a42a-4460-92a6-4562eb82b641-copy-1-copy-copy-copy\
+                -1-copy"
+            height: 9
+            width: 12
+            x: 12
+            "y": 27
+          - content:
+              $ref: "#/spec/panels/4bf6de76-863d-4799-8db2-7b42cce00b3c"
+            height: 9
+            width: 12
+            x: 0
+            "y": 36
+          - content:
+              $ref: "#/spec/panels/6f0fdf91-a42a-4460-92a6-4562eb82b641-copy-1-copy-copy-copy\
+                -1-copy-copy"
+            height: 9
+            width: 12
+            x: 12
+            "y": 36
+  panels:
+    4bf6de76-863d-4799-8db2-7b42cce00b3c:
+      kind: Panel
+      spec:
+        display:
+          description: "Node network errors\t"
+          name: k8s_node_network_errors_total
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds: {}
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: line
+              lineWidth: 1
+              palette:
+                mode: categorical
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 0
+                enforceMinimumFractionDigits: false
+                shortValues: false
+                signDisplay: auto
+                unit: decimal
+              min: 0
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum by (k8s_node_name, direction, cloud_region)
+                    (rate(k8s_node_network_errors_total{$k8s_node_name,$cloud_region}[$__rate_interval]))
+                  seriesNameFormat: "{{direction}} -> {{k8s_node_name}} ({{cloud_region}})"
+    6f0fdf91-a42a-4460-92a6-4562eb82b641:
+      kind: Panel
+      spec:
+        display:
+          description: Total cumulative CPU time (sum of all cores) spent by the
+            container/pod/node since its creation
+          name: k8s_node_cpu_time_seconds_total
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds: {}
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: line
+              lineWidth: 1
+              palette:
+                mode: auto
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 2
+                enforceMinimumFractionDigits: false
+                shortValues: false
+                signDisplay: auto
+                unit: decimal
+              min: 0
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: rate(k8s_node_cpu_time_seconds_total{$k8s_node_name,$cloud_region}[$__rate_interval])
+                  seriesNameFormat: "{{k8s_node_name}} ({{cloud_region}})"
+    6f0fdf91-a42a-4460-92a6-4562eb82b641-copy:
+      kind: Panel
+      spec:
+        display:
+          description: "Node CPU utilization\t"
+          name: k8s_node_cpu_utilization_ratio
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds: {}
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: line
+              lineWidth: 1
+              palette:
+                mode: categorical
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 2
+                enforceMinimumFractionDigits: false
+                shortValues: true
+                signDisplay: auto
+                unit: decimal
+              min: 0
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: k8s_node_cpu_utilization_ratio{$k8s_node_name,$cloud_region}
+                  seriesNameFormat: "{{k8s_node_name}} ({{cloud_region}})"
+    6f0fdf91-a42a-4460-92a6-4562eb82b641-copy-1:
+      kind: Panel
+      spec:
+        display:
+          description: Node filesystem usage
+          name: k8s_node_filesystem_usage_bytes
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds:
+              steps: []
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: line
+              lineWidth: 1
+              palette:
+                mode: auto
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 2
+                enforceMinimumFractionDigits: false
+                shortValues: true
+                signDisplay: auto
+                unit: "%"
+              min: 0
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: k8s_node_filesystem_usage_bytes{$k8s_node_name,$cloud_region}/(k8s_node_filesystem_available_bytes
+                    + k8s_node_filesystem_usage_bytes)
+                  seriesNameFormat: "{{k8s_node_name}} ({{cloud_region}})"
+    6f0fdf91-a42a-4460-92a6-4562eb82b641-copy-1-copy:
+      kind: Panel
+      spec:
+        display:
+          description: Node memory usage
+          name: k8s_node_memory_usage_bytes
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds:
+              steps: []
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: line
+              lineWidth: 1
+              palette:
+                mode: auto
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 2
+                enforceMinimumFractionDigits: false
+                shortValues: true
+                signDisplay: auto
+                unit: "%"
+              min: 0
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: k8s_node_memory_usage_bytes{$k8s_node_name,$cloud_region}/(k8s_node_memory_available_bytes
+                    + k8s_node_memory_usage_bytes)
+                  seriesNameFormat: "{{k8s_node_name}} ({{cloud_region}})"
+    6f0fdf91-a42a-4460-92a6-4562eb82b641-copy-1-copy-copy:
+      kind: Panel
+      spec:
+        display:
+          description: Available memory
+          name: k8s_node_memory_available_bytes
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds:
+              steps: []
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: line
+              lineWidth: 1
+              palette:
+                mode: categorical
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 2
+                enforceMinimumFractionDigits: false
+                shortValues: true
+                signDisplay: auto
+                unit: bytes
+              min: 0
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: k8s_node_memory_available_bytes{$k8s_node_name,$cloud_region}
+                  seriesNameFormat: "{{k8s_node_name}} ({{cloud_region}})"
+    6f0fdf91-a42a-4460-92a6-4562eb82b641-copy-1-copy-copy-copy:
+      kind: Panel
+      spec:
+        display:
+          description: Used memory
+          name: k8s_node_memory_usage_bytes
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds:
+              steps: []
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: line
+              lineWidth: 1
+              palette:
+                mode: categorical
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 2
+                enforceMinimumFractionDigits: false
+                shortValues: true
+                signDisplay: auto
+                unit: bytes
+              min: 0
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: k8s_node_memory_usage_bytes{$k8s_node_name,$cloud_region}
+                  seriesNameFormat: "{{k8s_node_name}} ({{cloud_region}})"
+    6f0fdf91-a42a-4460-92a6-4562eb82b641-copy-1-copy-copy-copy-1:
+      kind: Panel
+      spec:
+        display:
+          description: The amount of working set memory, this includes recently accessed
+            memory, dirty memory, and kernel memory
+          name: k8s_node_memory_working_set_bytes
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds:
+              steps: []
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: line
+              lineWidth: 1
+              palette:
+                mode: categorical
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 2
+                enforceMinimumFractionDigits: false
+                shortValues: true
+                signDisplay: auto
+                unit: bytes
+              min: 0
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum(k8s_node_memory_working_set_bytes{cloud_region!=""}) by ( host_name,
+                    cloud_region)
+                  seriesNameFormat: "{{host_name}} ({{cloud_region}})"
+    6f0fdf91-a42a-4460-92a6-4562eb82b641-copy-1-copy-copy-copy-1-copy:
+      kind: Panel
+      spec:
+        display:
+          description: The amount of anonymous and swap cache memory
+          name: k8s_node_memory_rss_bytes
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds:
+              steps: []
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: line
+              lineWidth: 1
+              palette:
+                mode: categorical
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 2
+                enforceMinimumFractionDigits: false
+                shortValues: true
+                signDisplay: auto
+                unit: bytes
+              min: 0
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: k8s_node_memory_rss_bytes{$k8s_node_name,$cloud_region}
+                  seriesNameFormat: "{{k8s_node_name}} ({{cloud_region}})"
+    6f0fdf91-a42a-4460-92a6-4562eb82b641-copy-1-copy-copy-copy-1-copy-copy:
+      kind: Panel
+      spec:
+        display:
+          description: |
+            Node network IO	
+          name: k8s_node_network_io_bytes_total
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds:
+              steps: []
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: line
+              lineWidth: 1
+              palette:
+                mode: categorical
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 2
+                enforceMinimumFractionDigits: false
+                shortValues: true
+                signDisplay: auto
+                unit: bytes
+              min: 0
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum by (k8s_node_name, direction, cloud_region)
+                    (rate(k8s_node_network_io_bytes_total{$k8s_node_name,$cloud_region}[$__rate_interval]))
+                  seriesNameFormat: "{{direction}} -> {{k8s_node_name}} ({{cloud_region}})"
+  variables:
+    - kind: Dash0FilterVariable
+      spec:
+        attributeKey: k8s_node_name
+        capturingRegexp: ""
+        display:
+          description: EKS worker node
+          hidden: false
+          name: ""
+        name: k8s_node_name
+        operator: is_set
+        values: []
+    - kind: Dash0FilterVariable
+      spec:
+        attributeKey: cloud_region
+        capturingRegexp: ""
+        display:
+          description: ""
+          hidden: false
+          name: ""
+        name: cloud_region
+        operator: is_not_set
+        values: []

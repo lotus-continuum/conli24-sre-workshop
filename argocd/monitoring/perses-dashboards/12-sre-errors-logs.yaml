@@ -1,0 +1,319 @@
+apiVersion: perses.dev/v1alpha1
+kind: PersesDashboard
+metadata:
+  name: 48-sre-errors-logs
+  namespace: dash0-system
+spec:
+  duration: 30m
+  display:
+    description: Contains various panels for log errors that we need to keep an eye on
+    name: SRE - Errors - Logs
+  layouts:
+    - kind: Grid
+      spec:
+        items:
+          - content:
+              $ref: "#/spec/panels/81ca0f2d-78de-4c31-89f0-89704cacfce7"
+            height: 8
+            width: 12
+            x: 0
+            "y": 0
+          - content:
+              $ref: "#/spec/panels/5ab97ba4-945c-4da4-9545-fa9fa7f81ea8"
+            height: 8
+            width: 12
+            x: 12
+            "y": 0
+          - content:
+              $ref: "#/spec/panels/4f9b440d-c738-48d5-b7dc-d5ded5531c2a"
+            height: 8
+            width: 12
+            x: 0
+            "y": 8
+          - content:
+              $ref: "#/spec/panels/875a0230-24d6-4f64-a895-edd25447e57b"
+            height: 8
+            width: 12
+            x: 12
+            "y": 8
+          - content:
+              $ref: "#/spec/panels/e7648e58-c05c-41d9-a784-1e7958b21452"
+            height: 8
+            width: 12
+            x: 0
+            "y": 16
+          - content:
+              $ref: "#/spec/panels/61b7ca13-a8f8-461b-9638-ed89dddcb676"
+            height: 8
+            width: 12
+            x: 12
+            "y": 16
+  panels:
+    4f9b440d-c738-48d5-b7dc-d5ded5531c2a:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Logs in dash0-system with UnhandledError
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds: {}
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: line
+              lineWidth: 1
+              palette:
+                mode: auto
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 2
+                enforceMinimumFractionDigits: false
+                shortValues: false
+                signDisplay: auto
+                unit: decimal
+              min: 0
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: increase(logs_total{k8s_namespace_name="dash0-system",
+                    otel_log_body=~".*UnhandledError.*" }[$__interval]) or on()
+                    vector(0)
+                  seriesNameFormat: " "
+    5ab97ba4-945c-4da4-9545-fa9fa7f81ea8:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Logs with MEMORY_LIMIT_EXCEEDED ERRORs
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds: {}
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: line
+              lineWidth: 1
+              palette:
+                mode: auto
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 2
+                enforceMinimumFractionDigits: false
+                shortValues: false
+                signDisplay: auto
+                unit: decimal
+              min: 0
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: increase(logs_total{otel_log_severity_range="ERROR",
+                    otel_log_body=~".*MEMORY_LIMIT_EXCEEDED.*" }[$__interval])
+                    or on() vector(0)
+                  seriesNameFormat: " "
+    61b7ca13-a8f8-461b-9638-ed89dddcb676:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: KNOWN / UNKNOWN log severities
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds: {}
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: line
+              lineWidth: 1
+              palette:
+                mode: categorical
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 0
+                enforceMinimumFractionDigits: false
+                shortValues: true
+                signDisplay: auto
+                unit: decimal
+              min: 0
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum
+                    (rate(logs_total{otel_log_severity_range!="UNKNOWN"}[$__rate_interval]))
+                  seriesNameFormat: KNOWN
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum
+                    (rate(logs_total{otel_log_severity_range="UNKNOWN"}[$__rate_interval]))
+                  seriesNameFormat: UNKNOWN
+    81ca0f2d-78de-4c31-89f0-89704cacfce7:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Logs with ERRORs
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds: {}
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: line
+              lineWidth: 1
+              palette:
+                mode: auto
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 2
+                enforceMinimumFractionDigits: false
+                shortValues: false
+                signDisplay: auto
+                unit: decimal
+              min: 0
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: increase(logs_total{otel_log_severity_range="ERROR"}[$__interval])
+                  seriesNameFormat: "{{k8s_pod_name}}"
+    875a0230-24d6-4f64-a895-edd25447e57b:
+      kind: Panel
+      spec:
+        display:
+          description: matching on bounceType
+          name: Log error notificationmanager - Email bouncing
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds: {}
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: line
+              lineWidth: 1
+              palette:
+                mode: auto
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 2
+                enforceMinimumFractionDigits: false
+                shortValues: false
+                signDisplay: auto
+                unit: decimal
+              min: 0
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: increase(logs_total{k8s_namespace_name="dash0-shared",
+                    k8s_deployment_name="notificationmanager",
+                    otel_log_body=~".*bounceType.*" }[$__interval]) or on()
+                    vector(0)
+                  seriesNameFormat: " "
+    e7648e58-c05c-41d9-a784-1e7958b21452:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Logs grouped by otel_log_severity_range
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds: {}
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: line
+              lineWidth: 1
+              palette:
+                mode: auto
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 0
+                enforceMinimumFractionDigits: false
+                shortValues: true
+                signDisplay: auto
+                unit: decimal
+              min: 0
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum by (otel_log_severity_range) (rate(logs_total{}[$__rate_interval]))
+                  seriesNameFormat: " {{otel_log_severity_range}}"

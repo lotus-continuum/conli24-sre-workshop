@@ -1,0 +1,258 @@
+apiVersion: perses.dev/v1alpha1
+kind: PersesDashboard
+metadata:
+  name: 25-sre-logs-per-pod
+  namespace: dash0-system
+spec:
+  duration: 30m
+  display:
+    description: Show counts for logs and spans per container that runs in
+      namespaces starting with "dash0"
+    name: SRE - Logs - per pods / container
+  layouts:
+    - kind: Grid
+      spec:
+        items:
+          - content:
+              $ref: "#/spec/panels/88b87411-145b-4aac-9ca4-30b101d8eb26"
+            height: 8
+            width: 12
+            x: 0
+            "y": 0
+          - content:
+              $ref: "#/spec/panels/88b87411-145b-4aac-9ca4-30b101d8eb26-copy-1-copy"
+            height: 10
+            width: 24
+            x: 0
+            "y": 8
+          - content:
+              $ref: "#/spec/panels/88b87411-145b-4aac-9ca4-30b101d8eb26-copy"
+            height: 8
+            width: 12
+            x: 12
+            "y": 0
+  panels:
+    0f20d62c-744c-42ac-9754-1f2e4d12bfd6:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: logs per container
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds: {}
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: bar
+              lineWidth: 1
+              palette:
+                mode: categorical
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 0
+                unit: decimal
+              min: 1
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum(rate(logs_total{k8s_namespace_name=~"dash0*"}[5m])) by
+                    (k8s_container_name)
+                  seriesNameFormat: "{{k8s_container_name}}"
+    0f20d62c-744c-42ac-9754-1f2e4d12bfd6-copy:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: spans per container
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds: {}
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: bar
+              lineWidth: 1
+              palette:
+                mode: categorical
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 0
+                unit: decimal
+              min: 1
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum(rate(spans_total{k8s_namespace_name=~"dash0*"}[5m])) by
+                    (k8s_container_name)
+                  seriesNameFormat: "{{k8s_container_name}}"
+    88b87411-145b-4aac-9ca4-30b101d8eb26:
+      kind: Panel
+      spec:
+        display:
+          name: logs per dash0 pod
+          description: ""
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            visual:
+              lineWidth: 1
+              areaOpacity: 0.55
+              pointRadius: 2.5
+              connectNulls: true
+              display: line
+              stack: none
+              palette:
+                mode: schemeDark2
+            legend:
+              position: right
+              mode: table
+              size: small
+              values:
+                - last
+            thresholds: {}
+            yAxis:
+              show: true
+              format:
+                unit: decimal
+                decimalPlaces: 0
+                signDisplay: auto
+                shortValues: false
+                enforceMinimumFractionDigits: false
+              min: 0
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum(rate(logs_total{k8s_namespace_name=~"dash0*",k8s_deployment_name!="",
+                    $cloud_region}[$__rate_interval])) by (k8s_pod_name,
+                    cloud_region)
+                  seriesNameFormat: "{{cloud_region}} - {{k8s_pod_name}}"
+    88b87411-145b-4aac-9ca4-30b101d8eb26-copy:
+      kind: Panel
+      spec:
+        display:
+          name: spans per dash0 pod
+          description: ""
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            visual:
+              lineWidth: 1
+              areaOpacity: 0.55
+              pointRadius: 2.5
+              connectNulls: true
+              display: line
+              stack: none
+              palette:
+                mode: schemeDark2
+            legend:
+              position: right
+              mode: table
+              size: small
+              values:
+                - last
+            thresholds: {}
+            yAxis:
+              show: true
+              format:
+                unit: decimal
+                decimalPlaces: 0
+                signDisplay: auto
+                shortValues: false
+                enforceMinimumFractionDigits: false
+              min: 0
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum(rate(spans_total{k8s_namespace_name=~"dash0*",k8s_deployment_name!="",
+                    $cloud_region}[$__rate_interval])) by (k8s_pod_name,
+                    cloud_region)
+                  seriesNameFormat: "{{cloud_region}} - {{k8s_pod_name}}"
+    88b87411-145b-4aac-9ca4-30b101d8eb26-copy-1-copy:
+      kind: Panel
+      spec:
+        display:
+          name: logs for all container
+          description: ""
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            visual:
+              lineWidth: 1
+              areaOpacity: 0.55
+              pointRadius: 2.5
+              connectNulls: true
+              display: line
+              stack: none
+              palette:
+                mode: schemeDark2
+            legend:
+              position: right
+              mode: table
+              size: small
+              values:
+                - last
+            thresholds: {}
+            yAxis:
+              show: true
+              format:
+                unit: decimal
+                decimalPlaces: 0
+                signDisplay: auto
+                shortValues: false
+                enforceMinimumFractionDigits: false
+              min: 0
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum(rate(logs_total{k8s_container_name!="",
+                    $cloud_region}[$__rate_interval])) by (k8s_container_name,
+                    cloud_region)
+                  seriesNameFormat: "{{cloud_region}} - {{k8s_container_name}}"
+  variables:
+    - kind: Dash0FilterVariable
+      spec:
+        attributeKey: cloud_region
+        capturingRegexp: ""
+        display:
+          description: ""
+          hidden: false
+          name: ""
+        name: cloud_region
+        operator: is_not_set
+        values: []

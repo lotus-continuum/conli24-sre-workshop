@@ -1,0 +1,688 @@
+apiVersion: perses.dev/v1alpha1
+kind: PersesDashboard
+metadata:
+  name: 24-sre-infra-k8s-pod-container-metrics
+  namespace: dash0-system
+spec:
+  duration: 30m
+  display:
+    description: "cAdvisor (Container Advisor) provides container users an
+      understanding of the resource usage and performance characteristics of
+      their running containers. It is a running daemon that collects,
+      aggregates, processes, and exports information about running containers.
+      Specifically, for each container it keeps resource isolation parameters,
+      historical resource usage, histograms of complete historical resource
+      usage and network statistics. This data is exported by container and
+      machine-wide. "
+    name: SRE - Infra - k8s pod & container metrics
+  layouts:
+    - kind: Grid
+      spec:
+        items:
+          - content:
+              $ref: "#/spec/panels/717d7649-58f2-43db-b081-9e497b7bac6a-copy"
+            height: 11
+            width: 10
+            x: 3
+            "y": 3
+          - content:
+              $ref: "#/spec/panels/717d7649-58f2-43db-b081-9e497b7bac6a-copy-copy"
+            height: 11
+            width: 10
+            x: 3
+            "y": 14
+          - content:
+              $ref: "#/spec/panels/717d7649-58f2-43db-b081-9e497b7bac6a-copy-copy-1"
+            height: 11
+            width: 11
+            x: 13
+            "y": 25
+          - content:
+              $ref: "#/spec/panels/717d7649-58f2-43db-b081-9e497b7bac6a-copy-copy-copy-1"
+            height: 11
+            width: 11
+            x: 13
+            "y": 14
+          - content:
+              $ref: "#/spec/panels/3cbdb1f7-c5ec-4c00-aa8c-8ca96e34b88e-copy"
+            height: 3
+            width: 24
+            x: 0
+            "y": 0
+          - content:
+              $ref: "#/spec/panels/717d7649-58f2-43db-b081-9e497b7bac6a-copy-copy-2"
+            height: 11
+            width: 10
+            x: 3
+            "y": 25
+          - content:
+              $ref: "#/spec/panels/717d7649-58f2-43db-b081-9e497b7bac6a-copy-copy-2-copy"
+            height: 11
+            width: 11
+            x: 13
+            "y": 3
+          - content:
+              $ref: "#/spec/panels/2ee0ea6d-beac-41f1-966c-6680a28725cd"
+            height: 22
+            width: 3
+            x: 0
+            "y": 3
+          - content:
+              $ref: "#/spec/panels/2ee0ea6d-beac-41f1-966c-6680a28725cd-copy"
+            height: 11
+            width: 3
+            x: 0
+            "y": 25
+          - content:
+              $ref: "#/spec/panels/2ee0ea6d-beac-41f1-966c-6680a28725cd-copy-copy"
+            height: 22
+            width: 3
+            x: 0
+            "y": 36
+          - content:
+              $ref: "#/spec/panels/717d7649-58f2-43db-b081-9e497b7bac6a-copy-copy-2-copy-1"
+            height: 11
+            width: 10
+            x: 3
+            "y": 36
+          - content:
+              $ref: "#/spec/panels/717d7649-58f2-43db-b081-9e497b7bac6a-copy-copy-2-copy-1-co\
+                py"
+            height: 11
+            width: 11
+            x: 13
+            "y": 36
+          - content:
+              $ref: "#/spec/panels/717d7649-58f2-43db-b081-9e497b7bac6a-copy-copy-2-copy-1-co\
+                py-2"
+            height: 11
+            width: 10
+            x: 3
+            "y": 47
+          - content:
+              $ref: "#/spec/panels/717d7649-58f2-43db-b081-9e497b7bac6a-copy-copy-2-copy-1-co\
+                py-2-copy"
+            height: 11
+            width: 11
+            x: 13
+            "y": 47
+          - content:
+              $ref: "#/spec/panels/2ee0ea6d-beac-41f1-966c-6680a28725cd-copy-copy-copy"
+            height: 22
+            width: 3
+            x: 0
+            "y": 58
+          - content:
+              $ref: "#/spec/panels/717d7649-58f2-43db-b081-9e497b7bac6a-copy-copy-2-copy-1-co\
+                py-2-copy-1"
+            height: 11
+            width: 10
+            x: 3
+            "y": 58
+          - content:
+              $ref: "#/spec/panels/717d7649-58f2-43db-b081-9e497b7bac6a-copy-copy-2-copy-1-co\
+                py-2-copy-1-copy"
+            height: 11
+            width: 11
+            x: 13
+            "y": 58
+          - content:
+              $ref: "#/spec/panels/347a038b-ae5c-4121-a51d-e505056b027d"
+            height: 11
+            width: 10
+            x: 3
+            "y": 69
+          - content:
+              $ref: "#/spec/panels/d3566f03-1f8f-4b10-a5bd-049778cf0190"
+            height: 11
+            width: 11
+            x: 13
+            "y": 69
+  panels:
+    2ee0ea6d-beac-41f1-966c-6680a28725cd:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Total CPU
+        plugin:
+          kind: Markdown
+          spec:
+            text: "## CPU"
+    2ee0ea6d-beac-41f1-966c-6680a28725cd-copy:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Total Memory
+        plugin:
+          kind: Markdown
+          spec:
+            text: "## Memory"
+    2ee0ea6d-beac-41f1-966c-6680a28725cd-copy-copy:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Total Network
+        plugin:
+          kind: Markdown
+          spec:
+            text: "## Network"
+    2ee0ea6d-beac-41f1-966c-6680a28725cd-copy-copy-copy:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Total Disk IO
+        plugin:
+          kind: Markdown
+          spec:
+            text: "## Disk IO"
+    3cbdb1f7-c5ec-4c00-aa8c-8ca96e34b88e-copy:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Description
+        plugin:
+          kind: Markdown
+          spec:
+            text: "# Filtered pods & containers"
+    717d7649-58f2-43db-b081-9e497b7bac6a-copy:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: CPU Usage sum by pod
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds: {}
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: line
+              lineWidth: 1
+              palette:
+                mode: categorical
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 0
+                enforceMinimumFractionDigits: false
+                shortValues: true
+                signDisplay: auto
+                unit: percent
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: topk(20, sum by (pod,cloud_region)
+                    (rate(container_cpu_usage_seconds_total{$cloud_region,pod!=""}
+                    [$__rate_interval]) * 100))
+                  seriesNameFormat: "{{pod}} ({{cloud_region}})"
+    717d7649-58f2-43db-b081-9e497b7bac6a-copy-copy:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: CPU Usage sum by container
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds: {}
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: line
+              lineWidth: 1
+              palette:
+                mode: categorical
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 0
+                enforceMinimumFractionDigits: false
+                shortValues: true
+                signDisplay: auto
+                unit: percent
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: topk(20, sum by (container, cloud_region)
+                    (rate(container_cpu_usage_seconds_total{$cloud_region}[$__rate_interval])
+                    ) * 100)
+                  seriesNameFormat: "{{container}} ({{cloud_region}})"
+    717d7649-58f2-43db-b081-9e497b7bac6a-copy-copy-1:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Memory Usage sum by pod
+        plugin:
+          kind: TimeSeriesTable
+          spec:
+            format:
+              decimalPlaces: 2
+              enforceMinimumFractionDigits: false
+              shortValues: true
+              signDisplay: auto
+              unit: decimal
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum by (pod, cloud_region)
+                    (rate(container_memory_usage_bytes{$cloud_region, $pod}
+                    [$__rate_interval]))
+                  seriesNameFormat: ""
+    717d7649-58f2-43db-b081-9e497b7bac6a-copy-copy-2:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Memory Usage sum by pod
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds: {}
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: line
+              lineWidth: 1
+              palette:
+                mode: categorical
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 0
+                enforceMinimumFractionDigits: false
+                shortValues: true
+                signDisplay: auto
+                unit: bytes
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum by (pod, cloud_region)
+                    (rate(container_memory_usage_bytes{$cloud_region, $pod}
+                    [$__rate_interval]))
+                  seriesNameFormat: "{{pod}} ({{cloud_region}})"
+    717d7649-58f2-43db-b081-9e497b7bac6a-copy-copy-2-copy:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: CPU Usage sum by pod
+        plugin:
+          kind: TimeSeriesTable
+          spec:
+            format:
+              decimalPlaces: 2
+              enforceMinimumFractionDigits: false
+              shortValues: true
+              signDisplay: auto
+              unit: decimal
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: topk(20, sum by (pod, cloud_region)
+                    (rate(container_cpu_usage_seconds_total{$cloud_region,pod!=""}
+                    [$__rate_interval]) * 100))
+                  seriesNameFormat: "{{pod}} ({{cloud_region}})"
+    717d7649-58f2-43db-b081-9e497b7bac6a-copy-copy-2-copy-1:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Top 20 - Network Received Bytes sum by pods
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds: {}
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: line
+              lineWidth: 1
+              palette:
+                mode: categorical
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 2
+                enforceMinimumFractionDigits: false
+                shortValues: true
+                signDisplay: auto
+                unit: bytes
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum by (pod, cloud_region) (topk(20,
+                    rate(container_network_receive_bytes_total{$pod,
+                    $cloud_region}[$__rate_interval])))
+                  seriesNameFormat: "{{pod}} ({{cloud_region}})"
+    717d7649-58f2-43db-b081-9e497b7bac6a-copy-copy-2-copy-1-copy:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Top 20 - Network Received Bytes sum by pods
+        plugin:
+          kind: TimeSeriesTable
+          spec:
+            format:
+              decimalPlaces: 2
+              enforceMinimumFractionDigits: false
+              shortValues: true
+              signDisplay: auto
+              unit: decimal
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: topk(20,sum by (pod, cloud_region)
+                    (rate(container_network_receive_bytes_total{$pod,
+                    $cloud_region}[$__rate_interval])))
+                  seriesNameFormat: ""
+    717d7649-58f2-43db-b081-9e497b7bac6a-copy-copy-2-copy-1-copy-2:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Top 20 - Network Transmitted Bytes sum by pods
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds: {}
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: line
+              lineWidth: 1
+              palette:
+                mode: categorical
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 2
+                enforceMinimumFractionDigits: false
+                shortValues: true
+                signDisplay: auto
+                unit: bytes
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum by (pod, cloud_region) (topk(20,
+                    rate(container_network_transmit_bytes_total{$pod,
+                    $cloud_region}[$__rate_interval])))
+                  seriesNameFormat: "{{pod}} ({{cloud_region}})"
+    717d7649-58f2-43db-b081-9e497b7bac6a-copy-copy-2-copy-1-copy-2-copy:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Top 20 - Network Transmitted Bytes sum by pods
+        plugin:
+          kind: TimeSeriesTable
+          spec:
+            format:
+              decimalPlaces: 2
+              enforceMinimumFractionDigits: false
+              shortValues: true
+              signDisplay: auto
+              unit: decimal
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum by (pod, cloud_region) (topk(20,
+                    rate(container_network_transmit_bytes_total{$pod,
+                    $cloud_region}[$__rate_interval])))
+                  seriesNameFormat: ""
+    717d7649-58f2-43db-b081-9e497b7bac6a-copy-copy-2-copy-1-copy-2-copy-1:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Top 20 - Disk IO Read sum by pods
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds: {}
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: line
+              lineWidth: 1
+              palette:
+                mode: categorical
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 2
+                enforceMinimumFractionDigits: false
+                shortValues: true
+                signDisplay: auto
+                unit: bytes
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum by (pod, cloud_region) (topk(20,
+                    rate(container_fs_reads_bytes_total{$pod,
+                    $cloud_region}[$__rate_interval])))
+                  seriesNameFormat: "{{pod}} ({{cloud_region}})"
+    717d7649-58f2-43db-b081-9e497b7bac6a-copy-copy-2-copy-1-copy-2-copy-1-copy:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Top 20 - Disk IO Read sum by pods
+        plugin:
+          kind: TimeSeriesTable
+          spec:
+            format:
+              decimalPlaces: 2
+              enforceMinimumFractionDigits: false
+              shortValues: true
+              signDisplay: auto
+              unit: decimal
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: >
+                    topk(20, sum by (pod, cloud_region)
+                    (rate(container_fs_reads_bytes_total{$cloud_region}[$__rate_interval])))
+                  seriesNameFormat: "{{pod}} {{cloud_region}}"
+    347a038b-ae5c-4121-a51d-e505056b027d:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Top 20 - Disk IO Write sum by pods
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds: {}
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: line
+              lineWidth: 1
+              palette:
+                mode: categorical
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 2
+                enforceMinimumFractionDigits: false
+                shortValues: true
+                signDisplay: auto
+                unit: bytes
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: topk(20, sum by (pod,cloud_region)
+                    (rate(container_fs_writes_bytes_total{}[$__rate_interval])))
+                  seriesNameFormat: "{{pod}} ({{cloud_region}})"
+    d3566f03-1f8f-4b10-a5bd-049778cf0190:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Top 20 - Disk IO Write sum by pods
+        plugin:
+          kind: TimeSeriesTable
+          spec:
+            format:
+              decimalPlaces: 2
+              enforceMinimumFractionDigits: false
+              shortValues: true
+              signDisplay: auto
+              unit: decimal
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: topk(20, sum by (pod,cloud_region)
+                    (rate(container_fs_writes_bytes_total{}[$__rate_interval])))
+                  seriesNameFormat: ""
+    717d7649-58f2-43db-b081-9e497b7bac6a-copy-copy-copy-1:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: CPU Usage sum by container
+        plugin:
+          kind: TimeSeriesTable
+          spec:
+            format:
+              decimalPlaces: 2
+              enforceMinimumFractionDigits: false
+              shortValues: true
+              signDisplay: auto
+              unit: decimal
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: topk(20, sum by (container, cloud_region)
+                    (rate(container_cpu_usage_seconds_total{$cloud_region}[$__rate_interval])
+                    ) * 100)
+                  seriesNameFormat: "{{container}}"
+  variables:
+    - kind: Dash0FilterVariable
+      spec:
+        attributeKey: cloud_region
+        capturingRegexp: ""
+        display:
+          description: ""
+          hidden: false
+          name: ""
+        name: cloud_region
+        operator: is_not_set
+        values: []
+    - kind: Dash0FilterVariable
+      spec:
+        attributeKey: pod
+        capturingRegexp: ""
+        display:
+          description: ""
+          hidden: false
+          name: ""
+        name: pod
+        operator: is_set
+        values: []

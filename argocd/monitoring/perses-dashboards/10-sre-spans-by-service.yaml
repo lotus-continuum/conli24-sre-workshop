@@ -1,0 +1,108 @@
+apiVersion: perses.dev/v1alpha1
+kind: PersesDashboard
+metadata:
+  name: 30-sre-spans-by-service
+  namespace: dash0-system
+spec:
+  duration: 30m
+  display:
+    description: ""
+    name: SRE - Spans - by service
+  layouts:
+    - kind: Grid
+      spec:
+        items:
+          - content:
+              $ref: "#/spec/panels/4ad9181c-6aab-478d-96fc-b21cfdbcfe78"
+            height: 14
+            width: 12
+            x: 12
+            "y": 3
+          - content:
+              $ref: "#/spec/panels/4ad9181c-6aab-478d-96fc-b21cfdbcfe78-copy"
+            height: 14
+            width: 12
+            x: 0
+            "y": 3
+          - content:
+              $ref: "#/spec/panels/829ea4a5-4def-47de-a765-dc0a56c3c954"
+            height: 3
+            width: 24
+            x: 0
+            "y": 0
+  panels:
+    4ad9181c-6aab-478d-96fc-b21cfdbcfe78:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: By service
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds: {}
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: line
+              lineWidth: 1
+              palette:
+                mode: auto
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 2
+                enforceMinimumFractionDigits: false
+                shortValues: false
+                signDisplay: auto
+                unit: decimal
+              min: 0
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum by (service_name) (increase(spans_total{}[$__rate_interval]))
+                  seriesNameFormat: "{{service_name}}"
+    4ad9181c-6aab-478d-96fc-b21cfdbcfe78-copy:
+      kind: Panel
+      spec:
+        display:
+          name: By service
+          description: ""
+        plugin:
+          kind: TimeSeriesTable
+          spec:
+            format:
+              unit: decimal
+              decimalPlaces: 2
+              signDisplay: auto
+              shortValues: false
+              enforceMinimumFractionDigits: false
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum by (service_name) (increase(spans_total{}[$__rate_interval]))
+                  seriesNameFormat: "{{service_name}}"
+    829ea4a5-4def-47de-a765-dc0a56c3c954:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Description
+        plugin:
+          kind: Markdown
+          spec:
+            text: This dashboard shows how many spans all our applications create

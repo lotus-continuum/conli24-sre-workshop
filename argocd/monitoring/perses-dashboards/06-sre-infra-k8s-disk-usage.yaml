@@ -1,0 +1,105 @@
+apiVersion: perses.dev/v1alpha1
+kind: PersesDashboard
+metadata:
+  name: 23-sre-infra-k8s-disk-usage
+  namespace: dash0-system
+spec:
+  duration: 30m
+  display:
+    description: ""
+    name: SRE - Infra - k8s disk usage
+  layouts:
+    - kind: Grid
+      spec:
+        items:
+          - content:
+              $ref: "#/spec/panels/545900bb-1b1f-43cf-8c50-b55441f2adec"
+            height: 17
+            width: 12
+            x: 0
+            "y": 0
+          - content:
+              $ref: "#/spec/panels/545900bb-1b1f-43cf-8c50-b55441f2adec-copy"
+            height: 17
+            width: 12
+            x: 12
+            "y": 0
+  panels:
+    545900bb-1b1f-43cf-8c50-b55441f2adec:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Disk Usage
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds:
+              steps:
+                - color: "#fff700"
+                  name: WARNING
+                  value: 80
+                - color: "#ff0000"
+                  name: CRITICAL
+                  value: 90
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: line
+              lineWidth: 1
+              palette:
+                mode: categorical
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 0
+                enforceMinimumFractionDigits: false
+                shortValues: false
+                signDisplay: auto
+                unit: percent
+              min: 0
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sort_desc(100 - sum(kubelet_volume_stats_available_bytes /
+                    kubelet_volume_stats_capacity_bytes * 100) by
+                    (persistentvolumeclaim, topology_kubernetes_io_region))
+                  seriesNameFormat: "{{persistentvolumeclaim}}
+                    ({{topology_kubernetes_io_region}})"
+    545900bb-1b1f-43cf-8c50-b55441f2adec-copy:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Untitled
+        plugin:
+          kind: TimeSeriesTable
+          spec:
+            format:
+              decimalPlaces: 2
+              enforceMinimumFractionDigits: false
+              shortValues: true
+              signDisplay: auto
+              unit: decimal
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sort_desc(100 - sum(kubelet_volume_stats_available_bytes /
+                    kubelet_volume_stats_capacity_bytes * 100) by
+                    (persistentvolumeclaim, topology_kubernetes_io_region))
+                  seriesNameFormat: "{{persistentvolumeclaim}}
+                    ({{topology_kubernetes_io_region}})"

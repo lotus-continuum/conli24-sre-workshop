@@ -1,0 +1,112 @@
+apiVersion: perses.dev/v1alpha1
+kind: PersesDashboard
+metadata:
+  name: 34-sre-errors-spans
+  namespace: dash0-system
+spec:
+  duration: 30m
+  display:
+    description: ""
+    name: SRE - Errors - Spans
+  layouts:
+    - kind: Grid
+      spec:
+        items:
+          - content:
+              $ref: "#/spec/panels/53221e97-45fd-47e0-9e26-e79b0d621f0d"
+            height: 8
+            width: 24
+            x: 0
+            "y": 0
+          - content:
+              $ref: "#/spec/panels/58d8323c-c96f-4fca-9b09-7277f58ddfe2"
+            height: 8
+            width: 24
+            x: 0
+            "y": 8
+  panels:
+    53221e97-45fd-47e0-9e26-e79b0d621f0d:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: By service_name
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds: {}
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: line
+              lineWidth: 1
+              palette:
+                mode: categorical
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 2
+                enforceMinimumFractionDigits: false
+                shortValues: true
+                signDisplay: auto
+                unit: decimal
+              min: 0
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum by (service_name) (increase(spans_total{otel_span_status_code =
+                    "ERROR"}[$__interval]))
+                  seriesNameFormat: "{{service_name}}"
+    58d8323c-c96f-4fca-9b09-7277f58ddfe2:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: By k8s_pod_name
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds: {}
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: line
+              lineWidth: 1
+              palette:
+                mode: auto
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 2
+                enforceMinimumFractionDigits: false
+                shortValues: false
+                signDisplay: auto
+                unit: decimal
+              min: 0
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: increase(spans_total{otel_span_status_code = "ERROR"}[$__interval])
+                  seriesNameFormat: "{{k8s_pod_name}}"

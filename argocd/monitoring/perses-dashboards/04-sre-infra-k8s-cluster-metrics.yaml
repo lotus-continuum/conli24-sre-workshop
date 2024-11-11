@@ -1,0 +1,395 @@
+apiVersion: perses.dev/v1alpha1
+kind: PersesDashboard
+metadata:
+  name: 21-sre-infra-k8s-cluster-metrics
+  namespace: dash0-system
+spec:
+  duration: 30m
+  display:
+    description: ""
+    name: SRE - Infra - k8s cluster metrics
+  layouts:
+    - kind: Grid
+      spec:
+        items:
+          - content:
+              $ref: "#/spec/panels/efb664c8-4617-43ac-9d4b-31059a22a6e6"
+            height: 3
+            width: 5
+            x: 0
+            "y": 3
+          - content:
+              $ref: "#/spec/panels/dd5b6668-0590-4a6f-a112-b936e672c2ae"
+            height: 3
+            width: 24
+            x: 0
+            "y": 0
+          - content:
+              $ref: "#/spec/panels/efb664c8-4617-43ac-9d4b-31059a22a6e6-copy-copy-1"
+            height: 3
+            width: 5
+            x: 10
+            "y": 3
+          - content:
+              $ref: "#/spec/panels/efb664c8-4617-43ac-9d4b-31059a22a6e6-copy-copy-1-copy"
+            height: 3
+            width: 5
+            x: 5
+            "y": 3
+          - content:
+              $ref: "#/spec/panels/efb664c8-4617-43ac-9d4b-31059a22a6e6-copy-copy-1-copy-copy"
+            height: 3
+            width: 4
+            x: 15
+            "y": 3
+          - content:
+              $ref: "#/spec/panels/efb664c8-4617-43ac-9d4b-31059a22a6e6-copy-copy-1-copy-copy\
+                -copy"
+            height: 3
+            width: 5
+            x: 19
+            "y": 3
+          - content:
+              $ref: "#/spec/panels/3bb5cf6e-d37e-403d-a4a5-640c5865bb45"
+            height: 9
+            width: 12
+            x: 0
+            "y": 6
+          - content:
+              $ref: "#/spec/panels/3bb5cf6e-d37e-403d-a4a5-640c5865bb45-copy"
+            height: 9
+            width: 12
+            x: 12
+            "y": 6
+          - content:
+              $ref: "#/spec/panels/e1689318-68d3-4aa0-889c-f8ef889b802f"
+            height: 6
+            width: 12
+            x: 0
+            "y": 15
+          - content:
+              $ref: "#/spec/panels/b1030dfc-e951-4a69-8da6-e4311956df40"
+            height: 6
+            width: 12
+            x: 12
+            "y": 15
+  panels:
+    3bb5cf6e-d37e-403d-a4a5-640c5865bb45:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Pods per node
+        plugin:
+          kind: TimeSeriesTable
+          spec: {}
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum by (k8s_node_name, cloud_region) (kubelet_active_pods)
+                  seriesNameFormat: "{{k8s_node_name}}"
+    3bb5cf6e-d37e-403d-a4a5-640c5865bb45-copy:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Pods by availability zone
+        plugin:
+          kind: TimeSeriesChart
+          spec:
+            legend:
+              mode: table
+              position: right
+              size: small
+              values:
+                - last
+            thresholds: {}
+            visual:
+              areaOpacity: 0.55
+              connectNulls: true
+              display: line
+              lineWidth: 1
+              palette:
+                mode: auto
+              pointRadius: 2.5
+              stack: none
+            yAxis:
+              format:
+                decimalPlaces: 2
+                enforceMinimumFractionDigits: false
+                shortValues: false
+                signDisplay: auto
+                unit: decimal
+              max: null
+              min: 0
+              show: true
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum by (topology_kubernetes_io_zone) (kubelet_active_pods)
+                  seriesNameFormat: "{{topology_kubernetes_io_zone}}"
+    b1030dfc-e951-4a69-8da6-e4311956df40:
+      kind: Panel
+      spec:
+        display:
+          name: Pending Pods
+          description: ""
+        plugin:
+          kind: TimeSeriesTable
+          spec:
+            format:
+              unit: decimal
+              decimalPlaces: 2
+              signDisplay: auto
+              shortValues: false
+              enforceMinimumFractionDigits: false
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum(k8s_pod_phase==1) by (k8s_pod_name) OR on() vector(0)
+                  seriesNameFormat: "{{k8s_pod_name}}"
+    dd5b6668-0590-4a6f-a112-b936e672c2ae:
+      kind: Panel
+      spec:
+        display:
+          name: Created
+          description: ""
+        plugin:
+          kind: StatChart
+          spec:
+            calculation: last-number
+            format:
+              unit: milliseconds
+              decimalPlaces: 1
+              signDisplay: auto
+              shortValues: false
+              enforceMinimumFractionDigits: false
+            thresholds: {}
+            sparkline: {}
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: kube_node_created
+                  seriesNameFormat: "{{exported_node}}"
+    e1689318-68d3-4aa0-889c-f8ef889b802f:
+      kind: Panel
+      spec:
+        display:
+          name: Pod Phase
+          description: ""
+        plugin:
+          kind: StatChart
+          spec:
+            calculation: last-number
+            format:
+              unit: decimal
+              decimalPlaces: 2
+              signDisplay: auto
+              shortValues: false
+              enforceMinimumFractionDigits: false
+            thresholds:
+              steps: []
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum(k8s_pod_phase==1)/1 OR on() vector(0)
+                  seriesNameFormat: Pending
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum(k8s_pod_phase==2)/2 OR on() vector(0)
+                  seriesNameFormat: Running
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum(k8s_pod_phase==3)/3 OR on() vector(0)
+                  seriesNameFormat: Succeeded
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum(k8s_pod_phase==5)/5 OR on() vector(0)
+                  seriesNameFormat: Unknown
+    efb664c8-4617-43ac-9d4b-31059a22a6e6:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Nodes
+        plugin:
+          kind: StatChart
+          spec:
+            calculation: last-number
+            format:
+              decimalPlaces: 2
+              enforceMinimumFractionDigits: false
+              shortValues: false
+              signDisplay: auto
+              unit: decimal
+            thresholds: {}
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum(kube_node_info{})
+                  seriesNameFormat: " "
+    efb664c8-4617-43ac-9d4b-31059a22a6e6-copy-copy-1:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: MemoryPressure
+        plugin:
+          kind: StatChart
+          spec:
+            calculation: last-number
+            format:
+              decimalPlaces: 2
+              enforceMinimumFractionDigits: false
+              shortValues: false
+              signDisplay: auto
+              unit: decimal
+            thresholds: {}
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum(kube_node_status_condition{condition="MemoryPressure",status="true"})
+                  seriesNameFormat: " True"
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum(kube_node_status_condition{condition="MemoryPressure",status="false"})
+                  seriesNameFormat: "False"
+    efb664c8-4617-43ac-9d4b-31059a22a6e6-copy-copy-1-copy:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: Ready
+        plugin:
+          kind: StatChart
+          spec:
+            calculation: last-number
+            format:
+              decimalPlaces: 2
+              enforceMinimumFractionDigits: false
+              shortValues: false
+              signDisplay: auto
+              unit: decimal
+            thresholds: {}
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum(kube_node_status_condition{condition="Ready",status="true"})
+                  seriesNameFormat: " True"
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum(kube_node_status_condition{condition="Ready",status="false"})
+                  seriesNameFormat: "False"
+    efb664c8-4617-43ac-9d4b-31059a22a6e6-copy-copy-1-copy-copy:
+      kind: Panel
+      spec:
+        display:
+          description: ""
+          name: DiskPressure
+        plugin:
+          kind: StatChart
+          spec:
+            calculation: last-number
+            format:
+              decimalPlaces: 2
+              enforceMinimumFractionDigits: false
+              shortValues: false
+              signDisplay: auto
+              unit: decimal
+            thresholds: {}
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum(kube_node_status_condition{condition="DiskPressure",status="true"})
+                  seriesNameFormat: " True"
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum(kube_node_status_condition{condition="DiskPressure",status="false"})
+                  seriesNameFormat: "False"
+    efb664c8-4617-43ac-9d4b-31059a22a6e6-copy-copy-1-copy-copy-copy:
+      kind: Panel
+      spec:
+        display:
+          description: Nodes with PID Pressure in Kubernetes is an incident type that
+            occurs when a Kubernetes cluster node experiences PID pressure,
+            meaning that it may not be able to start more containers. This is a
+            rare condition where a pod or container spawns too many processes
+            and starves the node of available process IDs. Each node has a
+            limited number of process IDs to distribute amongst running
+            processes; and if it runs out of IDs, no other processes can be
+            started. Kubernetes lets you set PID thresholds for pods to limit
+            their ability to perform runaway process-spawning, and a PID
+            pressure condition means that one or more pods are using up their
+            allocated PIDs and need to be examined.
+          name: PIDPressure
+        plugin:
+          kind: StatChart
+          spec:
+            calculation: last-number
+            format:
+              decimalPlaces: 2
+              enforceMinimumFractionDigits: false
+              shortValues: false
+              signDisplay: auto
+              unit: decimal
+            thresholds: {}
+        queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum(kube_node_status_condition{condition="PIDPressure",status="true"})
+                  seriesNameFormat: " True"
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  query: sum(kube_node_status_condition{condition="PIDPressure",status="false"})
+                  seriesNameFormat: "False"
